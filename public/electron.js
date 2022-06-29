@@ -2,14 +2,20 @@ const path = require('path');
 
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
+const MIN_WIDTH = 800;
+const MIN_HEIGHT = 600;
 
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: MIN_WIDTH,
+    height: MIN_HEIGHT,
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js")
     },
   });
 
@@ -20,6 +26,14 @@ function createWindow() {
       ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
+
+  // load icon to the title bar
+  win.setIcon(
+    isDev 
+      ? path.join(__dirname, "logo192.png")
+      : path.join(__dirname, "../build/logo192.png")
+  );
+
   // Open the DevTools.
   if (isDev) {
     win.webContents.openDevTools({ mode: 'detach' });
