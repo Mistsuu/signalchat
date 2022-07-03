@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/material";
-import { AppConstant } from "const";
+import { SystemConstant } from "const";
 
 const ChatItem = ({ data, ...otherProps }) => {
   let classes = useStyles();
-  return data.side === AppConstant.CHAT_SIDE_TYPE.our
+  return data.side === SystemConstant.CHAT_SIDE_TYPE.our
     ? (
         <Box className={clsx(classes.chatItem, classes.ourChat)}>
           <Box className={clsx(classes.chatText, classes.ourChatText)}>
@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme => ({
     color: "white",
     textAlign: "center",
     fontFamily: "RobotoMono",
+    lineBreak: "anywhere"
   },
   ourChatText: {
     color: "white",

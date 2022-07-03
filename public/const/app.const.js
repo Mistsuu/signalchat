@@ -1,8 +1,5 @@
-const CHAT_SIDE_TYPE = {
-  our: 0,
-  their: 1
-}
+const APP_NAME_STR = "signalChat";
 
 module.exports = {
-  CHAT_SIDE_TYPE
+  APP_NAME_STR
 }

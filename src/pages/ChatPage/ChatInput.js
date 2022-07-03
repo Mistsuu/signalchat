@@ -1,7 +1,9 @@
 import React, { memo, useState } from "react";
 import PropTypes from "prop-types";
-import { TextField, Box, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { TextField, Box } from "@mui/material";
+import sendIcon from "assets/img/sendIcon.png";
+import { Button } from "components";
 
 const ChatInput = ({ onUpdateNewMessage, ...otherProps }) => {
   const [messageContent, setMessageContent] = useState("");
@@ -16,6 +18,7 @@ const ChatInput = ({ onUpdateNewMessage, ...otherProps }) => {
 
   return (
     <Box className={classes.chatInputWrapper}>
+
       <Box className={classes.inputType}>
         <TextField
           value={messageContent}
@@ -39,15 +42,10 @@ const ChatInput = ({ onUpdateNewMessage, ...otherProps }) => {
         />
       </Box>
 
-      <Button
-        sx={{
-          borderRadius: 50
-        }}
-        variant="outlined"
-        onClick={onClickButton}
-      >
-        send
+      <Button onClick={onClickButton}>
+        <img src={sendIcon}></img>
       </Button>
+
     </Box>
   );
 };
@@ -64,23 +62,24 @@ export default memo(ChatInput);
 
 const useStyles = makeStyles(theme => ({
   input: {
-    width: "95%",
+    width: "calc(100% - 30px)",
   },
 
   inputType: {
     paddingBottom: 0,
-    bottom: "10px",
-    width: "90%",
-    position: "absolute",
+    width: "calc(100% - 150px)",
     display: "flex",
     justifyContent: "center",
     borderRadius: 20,
     backgroundColor: "#CCCCCC",
+    marginRight: "10px",
+    height: 35,
+    borderStyle: "dashed"
   },
 
   chatInputWrapper: {
     display: "flex",
     justifyContent: "center",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
   },
 }));

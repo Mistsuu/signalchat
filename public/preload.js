@@ -6,5 +6,14 @@ const { contextBridge } = require("electron");
 contextBridge.exposeInMainWorld("SignalConstant", {
   app: {
     ...require("./const/app.const")
+  },
+  system: {
+    ...require("./const/system.const")
+  }
+})
+
+contextBridge.exposeInMainWorld("interactor", {
+  app: {
+    ...require("./interactor/app.interactor")
   }
 })

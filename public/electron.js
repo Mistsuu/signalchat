@@ -2,9 +2,11 @@ const path = require('path');
 
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
-const MIN_WIDTH = 400;
-const MIN_HEIGHT = 600;
+const remoteMain = require('@electron/remote/main');
+remoteMain.initialize();
 
+const MIN_WIDTH = 432;
+const MIN_HEIGHT = 700;
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -18,6 +20,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      enableRemoteModule: true,
       preload: path.join(__dirname, "preload.js")
     },
   });
@@ -38,9 +41,12 @@ function createWindow() {
   );
 
   // Open the DevTools.
-  // if (isDev) {
-  //   win.webContents.openDevTools({ mode: 'detach' });
-  // }
+  if (isDev) {
+    win.webContents.openDevTools({ mode: 'detach' });
+  }
+
+  // Enable remote tools
+  remoteMain.enable(win.webContents);
 }
 
 // This method will be called when Electron has finished

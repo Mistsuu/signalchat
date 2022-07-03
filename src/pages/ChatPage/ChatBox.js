@@ -1,9 +1,9 @@
 import React, { memo, useState, useRef, useEffect } from "react";
-import { Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { Box } from "@mui/material";
 import ChatInput from "./ChatInput";
 import ChatItem from "./ChatItem";
-import { AppConstant } from "const";
+import { SystemConstant } from "const";
 
 const ChatBox = props => {
   const [messages, setMessages] = useState([]);
@@ -13,7 +13,7 @@ const ChatBox = props => {
   const onUpdateNewMessage = (newMessageContent) => {
     let newMessage = {
       content: newMessageContent,
-      side: AppConstant.CHAT_SIDE_TYPE.our,
+      side: SystemConstant.CHAT_SIDE_TYPE.our,
     }
 
     setMessages([ ...messages, newMessage ]);
