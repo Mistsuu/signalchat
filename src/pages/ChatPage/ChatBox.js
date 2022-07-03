@@ -1,45 +1,61 @@
-import React, { memo } from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
-import { makeStyles } from "@mui/styles";
+import React, { memo, useState, useRef, useEffect } from "react";
 import { Box } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import ChatInput from "./ChatInput";
+import ChatItem from "./ChatItem";
+import { AppConstant } from "const";
 
-const ChatBox = ({ side, ...otherProps }) => {
-  let classes = useStyles();
-  return side === AppConstant.CHAT_SIDE_TYPE.our
-    ? (
-        <Box className={clsx(classes.chatBox, classes.ourChat)}>Our</Box>
-      )
-    : (
-        <Box className={clsx(classes.chatBox, classes.theirChat)}>Their</Box>
-      );
-}
+const ChatBox = props => {
+  const [messages, setMessages] = useState([]);
+  const classes = useStyles();
+  const dummyRef = useRef();
+  
+  const onUpdateNewMessage = (newMessageContent) => {
+    let newMessage = {
+      content: newMessageContent,
+      side: AppConstant.CHAT_SIDE_TYPE.our,
+    }
 
-ChatBox.propTypes = {
-  side: PropTypes.number
-}
+    setMessages([ ...messages, newMessage ]);
+  }
+
+  useEffect(() => {
+    if (!dummyRef.current) 
+      return;
+    dummyRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages])
+
+  return (
+    <>
+      <Box className={classes.messageWindow}>
+        <Box className={classes.messageInnerWindow}>
+          {messages 
+            && messages.map((eachMessage, index) => <ChatItem key={index} data={eachMessage}/>)}
+          <Box ref={dummyRef}></Box>
+        </Box>
+      </Box>
+      <ChatInput onUpdateNewMessage={onUpdateNewMessage}/>
+    </>
+  );
+};
+
+ChatBox.propTypes = {};
+ChatBox.defaultProps = {};
 
 export default memo(ChatBox);
 
 const useStyles = makeStyles(theme => ({
-  chatBox: {
-    maxWidth: 500,
-    marginBottom: 12,
-    lineHeight: 24,
-    padding: "10px 20px",
-    borderRadius: 25,
-    position: "relative",
-    color: "white",
-    textAlign: "center"
+  messageWindow: {
+    height: "80vh",
+    margin: "20px",
+    borderRadius: 15,
+    borderStyle: "solid",
+    padding: "0px 3px 0px 10px"
   },
-  ourChat: {
-    color: "white",
-    background: "#0b93f6",
-    alignSelf: "flex-end",
-    flexDirection: "row-reverse"
-  },
-  theirChat: {
-    background: "#e5e5ea",
-    color: "black",
+
+  messageInnerWindow: {
+    height: "100%",
+    overflowY: "scroll",
+    padding: "0px 10px 0px 0px",
   }
 }));

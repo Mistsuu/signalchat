@@ -1,9 +1,15 @@
 import './App.css';
-import { ChatPage, LoginPage } from './pages';
+import { CssBaseline } from '@mui/material';
+import { ChatPage } from './pages';
+import { TitleBar } from 'components';
 
 const App = () => {
   return (
-    <ChatPage />
+    <>
+      <TitleBar className="titlebar"/>
+      <CssBaseline/>
+      <ChatPage/>
+    </>
   );
 }
 

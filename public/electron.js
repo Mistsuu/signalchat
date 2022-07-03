@@ -2,12 +2,15 @@ const path = require('path');
 
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
-const MIN_WIDTH = 800;
+const MIN_WIDTH = 400;
 const MIN_HEIGHT = 600;
 
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
+    transparent: true,
+    frame: false,
+    titleBarStyle: "hidden",
     width: MIN_WIDTH,
     height: MIN_HEIGHT,
     minWidth: MIN_WIDTH,
@@ -35,9 +38,9 @@ function createWindow() {
   );
 
   // Open the DevTools.
-  if (isDev) {
-    win.webContents.openDevTools({ mode: 'detach' });
-  }
+  // if (isDev) {
+  //   win.webContents.openDevTools({ mode: 'detach' });
+  // }
 }
 
 // This method will be called when Electron has finished

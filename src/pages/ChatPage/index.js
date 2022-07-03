@@ -1,13 +1,14 @@
 import React from "react";
-import { AppConstant } from "../../const";
+import { makeStyles } from "@mui/styles";
+import { Box } from "@mui/material";
 import ChatBox from "./ChatBox";
-// import ChatInput from "./ChatInput";
 
 const ChatPage = () => {
   return (
     <>
-      <ChatBox side={AppConstant.CHAT_SIDE_TYPE.our}/>
-      <ChatBox side={AppConstant.CHAT_SIDE_TYPE.their}/>
+      <Box>
+        <ChatBox/>
+      </Box>
     </>
   )
 }
