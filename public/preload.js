@@ -15,5 +15,8 @@ contextBridge.exposeInMainWorld("SignalConstant", {
 contextBridge.exposeInMainWorld("interactor", {
   app: {
     ...require("./interactor/app.interactor")
+  },
+  crypto: {
+    ...require("./interactor/crypto.interactor")
   }
 })
