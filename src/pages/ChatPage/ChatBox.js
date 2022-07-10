@@ -8,7 +8,6 @@ import { SystemConstant } from "const";
 const ChatBox = props => {
   const [messages, setMessages] = useState([]);
   const classes = useStyles();
-  const dummyRef = useRef();
   
   const onUpdateNewMessage = (newMessageContent) => {
     let newMessage = {
@@ -16,22 +15,21 @@ const ChatBox = props => {
       side: SystemConstant.CHAT_SIDE_TYPE.our,
     }
 
-    setMessages([ ...messages, newMessage ]);
+    setMessages([ newMessage, ...messages ]);
   }
 
-  useEffect(() => {
-    if (!dummyRef.current) 
-      return;
-    dummyRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [messages])
+  const onFetchOldMessage = () => {
+    
+  }
 
   return (
     <>
       <Box className={classes.messageWindow}>
         <Box className={classes.messageInnerWindow}>
           {messages 
-            && messages.map((eachMessage, index) => <ChatItem key={index} data={eachMessage}/>)}
-          <Box ref={dummyRef}></Box>
+            && messages.map((eachMessage, index) => 
+                <ChatItem key={index} data={eachMessage}/>
+            )}
         </Box>
       </Box>
       <ChatInput onUpdateNewMessage={onUpdateNewMessage}/>
@@ -50,12 +48,14 @@ const useStyles = makeStyles(theme => ({
     margin: "20px",
     borderRadius: 15,
     borderStyle: "solid",
-    padding: "0px 3px 0px 10px"
+    padding: "0px 3px 0px 10px",
   },
 
   messageInnerWindow: {
     height: "100%",
     overflowY: "scroll",
     padding: "0px 10px 0px 0px",
+    display: "flex",
+    flexDirection: "column-reverse"
   }
 }));
