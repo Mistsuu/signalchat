@@ -9,8 +9,16 @@
         "<!@(node -p \"require('node-addon-api').include\")",
 	"native/lib",
       ],
-      'cflags!': [ '-fno-exceptions' ],
-      'cflags_cc!': [ '-fno-exceptions' ],
+      "link_settings": {
+        "libraries": [
+          "-lgmp",
+          "-lgmpxx",
+          "-lssl",
+          "-lcrypto"
+        ]
+      },
+      'cflags!': [ '-fno-exceptions', '-O3', '-ggdb' ],
+      'cflags_cc!': [ '-fno-exceptions', '-O3', '-ggdb' ],
       'conditions': [
         ["OS=='win'", {
           "defines": [
