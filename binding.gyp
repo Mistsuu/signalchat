@@ -2,7 +2,9 @@
   "targets": [
     {
       "target_name": "SignalChat_Native",
-      "sources": [ "native/src/SignalChat_Native.cpp" ],
+      "sources": [ 
+        "native/src/SignalChat_Native.cpp", 
+      ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
 	"native/lib",
