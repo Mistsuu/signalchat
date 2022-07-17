@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
   messageInnerWindow: {
     height: "100%",
     overflowY: "scroll",
-    padding: "0px 10px 0px 0px",
+    padding: "0px 10px 0px 10px",
     display: "flex",
     flexDirection: "column-reverse"
   }

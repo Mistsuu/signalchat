@@ -73,8 +73,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 20,
     backgroundColor: "#CCCCCC",
     marginRight: "10px",
-    height: 35,
-    borderStyle: "dashed"
+    height: 40,
+    borderStyle: "dashed",
   },
 
   chatInputWrapper: {

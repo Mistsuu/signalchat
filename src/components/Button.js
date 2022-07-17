@@ -27,8 +27,8 @@ const Button = ({ onClick, width, height, children, ...otherProps }) => {
 
 Button.defaultProps = {
   onClick: () => {},
-  width: 32,
-  height: 29.5
+  width: 37,
+  height: 33.5
 };
 
 Button.propTypes = {

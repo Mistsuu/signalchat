@@ -45,7 +45,9 @@ const useStyles = makeStyles(theme => ({
     color: "white",
     textAlign: "center",
     fontFamily: "RobotoMono",
-    lineBreak: "anywhere"
+    lineBreak: "anywhere",
+    borderStyle: "solid",
+    borderColor: "#1d1e1f",
   },
   ourChatText: {
     color: "white",

@@ -1,5 +1,5 @@
 const APP_NAME_STR = "signalChat";
 
 module.exports = {
-  APP_NAME_STR
+  APP_NAME_STR,
 }

@@ -5,8 +5,14 @@ const deepCloneJsonObject = json => {
 };
 const AppConstant = deepCloneJsonObject(window.SignalConstant.app);
 const SystemConstant = deepCloneJsonObject(window.SignalConstant.system);
+const NativeConstant = deepCloneJsonObject(window.SignalConstant.native);
+const StorageConstant = deepCloneJsonObject(window.SignalConstant.storage);
+const ApiConstant = deepCloneJsonObject(window.SignalConstant.api);
 
 export {
   AppConstant,
-  SystemConstant
+  SystemConstant,
+  NativeConstant,
+  StorageConstant,
+  ApiConstant,
 };
