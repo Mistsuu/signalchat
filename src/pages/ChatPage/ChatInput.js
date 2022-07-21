@@ -2,14 +2,14 @@ import React, { memo, useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@mui/styles";
 import { TextField, Box } from "@mui/material";
-import sendIcon from "assets/img/sendIcon.png";
 import { Button } from "components";
+import sendIcon from "assets/img/sendIcon.png";
 
 const ChatInput = ({ onUpdateNewMessage, ...otherProps }) => {
   const [messageContent, setMessageContent] = useState("");
   const classes = useStyles();
 
-  const onClickButton = () => {
+  const onSend = () => {
     if (messageContent !== "") {
       onUpdateNewMessage(messageContent);
       setMessageContent("");
@@ -35,14 +35,14 @@ const ChatInput = ({ onUpdateNewMessage, ...otherProps }) => {
           onKeyDown={
             (event) => {
               if (event.key === "Enter") {
-                onClickButton()
+                onSend()
               }
             }
           }
         />
       </Box>
 
-      <Button onClick={onClickButton}>
+      <Button onClick={onSend}>
         <img src={sendIcon}></img>
       </Button>
 

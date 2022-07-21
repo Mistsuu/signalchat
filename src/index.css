@@ -3,6 +3,16 @@
   src: url(./assets/fonts/RobotoMono/RobotoMono-Regular.ttf);
 }
 
+@font-face {
+  font-family: IBMPlexMono;
+  src: url(./assets/fonts/IBMPlexMono/IBMPlexMono-Regular.ttf);
+}
+
+@font-face {
+  font-family: Inter;
+  src: url(./assets/fonts/Inter/Inter-Regular.ttf);
+}
+
 body,
 html {
   margin: 0;
