@@ -8,8 +8,6 @@ import { SystemConstant, QueryConstant } from "const";
 import { TestAction } from "actions";
 
 const ChatBox = props => {
-  
-  const {data, error, status} = useQuery([QueryConstant.QUERY_TEST], TestAction.postTest, {refetchInterval: 1000});
   const [messages, setMessages] = useState([]);
   const classes = useStyles();
   
