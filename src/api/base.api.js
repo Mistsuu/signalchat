@@ -1,3 +1,7 @@
+/*
+  base.api.js: To store the base of APIs.
+*/
+
 import { ApiConstant } from "const";
 import apisauce from "apisauce";
 import QueryString from "qs";
