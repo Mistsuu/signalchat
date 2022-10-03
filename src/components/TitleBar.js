@@ -15,12 +15,12 @@ const TitleBar = () => {
           onClick={AppInteractor.closeWindow}
         />
         <Box 
-          className={classes.maximiseButton} 
-          onClick={AppInteractor.maximizeWindow}
-        />
-        <Box 
           className={classes.minimiseButton} 
           onClick={AppInteractor.minimizeWindow}
+        />
+        <Box 
+          className={classes.maximiseButton} 
+          onClick={AppInteractor.maximizeWindow}
         />
 
         <Box className={classes.titleBarDraggableRegion}>

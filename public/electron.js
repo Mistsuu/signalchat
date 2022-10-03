@@ -5,8 +5,8 @@ const isDev = require('electron-is-dev');
 const remoteMain = require('@electron/remote/main');
 remoteMain.initialize();
 
-const MIN_WIDTH = 432;
-const MIN_HEIGHT = 700;
+const MIN_WIDTH = 830;
+const MIN_HEIGHT = 765;
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({

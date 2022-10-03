@@ -7,7 +7,7 @@
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
-	"native/lib",
+	      "native/lib",
       ],
       "link_settings": {
         "libraries": [

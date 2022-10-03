@@ -14,6 +14,7 @@ const STT_NOT_FOUND = 404;
 const STT_INTERNAL_SERVER = 500;
 
 // API
+const API_TEST = "/test";
 
 module.exports = {
   // Common
@@ -28,4 +29,5 @@ module.exports = {
   STT_NOT_FOUND,
   STT_INTERNAL_SERVER,
   // API
+  API_TEST,
 };
