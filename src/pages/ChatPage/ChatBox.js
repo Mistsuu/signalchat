@@ -1,11 +1,15 @@
 import React, { memo, useState, useRef, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/material";
 import ChatInput from "./ChatInput";
 import ChatItem from "./ChatItem";
-import { SystemConstant } from "const";
+import { SystemConstant, QueryConstant } from "const";
+import { TestAction } from "actions";
 
 const ChatBox = props => {
+  
+  const {data, error, status} = useQuery([QueryConstant.QUERY_TEST], TestAction.postTest, {refetchInterval: 1000});
   const [messages, setMessages] = useState([]);
   const classes = useStyles();
   

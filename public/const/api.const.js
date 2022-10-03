@@ -1,5 +1,5 @@
 // Common
-const BASE_URL = "http://localhost:1208/";
+const BASE_URL = "http://172.16.88.158:1208";
 const HEADER_DEFAULT = {
   Accept: "application/json",
 };

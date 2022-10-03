@@ -7,9 +7,9 @@ import apisauce from "apisauce";
 import QueryString from "qs";
 
 export const DEFAULT_API_CONFIG = {
+  baseURL: ApiConstant.BASE_URL,
   headers: ApiConstant.HEADER_DEFAULT,
   timeout: ApiConstant.TIMEOUT,
-  baseUrl: ApiConstant.BASE_URL,
   paramSerializer: params => QueryString.stringify(params, { arrayFormat: "repeat" }),
 };
 

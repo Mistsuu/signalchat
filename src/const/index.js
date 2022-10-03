@@ -8,6 +8,7 @@ const SystemConstant = deepCloneJsonObject(window.SignalConstant.system);
 const NativeConstant = deepCloneJsonObject(window.SignalConstant.native);
 const StorageConstant = deepCloneJsonObject(window.SignalConstant.storage);
 const ApiConstant = deepCloneJsonObject(window.SignalConstant.api);
+const QueryConstant = deepCloneJsonObject(window.SignalConstant.query);
 
 export {
   AppConstant,
@@ -15,4 +16,5 @@ export {
   NativeConstant,
   StorageConstant,
   ApiConstant,
+  QueryConstant,
 };

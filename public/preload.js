@@ -21,6 +21,9 @@ contextBridge.exposeInMainWorld("SignalConstant", {
   api: {
     ...require("./const/api.const")
   },
+  query: {
+    ...require("./const/query.const")
+  },
 })
 
 contextBridge.exposeInMainWorld("interactor", {
