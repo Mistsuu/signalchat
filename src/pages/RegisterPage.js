@@ -1,10 +1,10 @@
 import React, { memo } from "react";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   return (
     <>
     </>
   )
 }
 
-export default memo(LoginPage);
+export default memo(RegisterPage);

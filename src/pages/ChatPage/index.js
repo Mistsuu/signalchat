@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/material";
 import ChatBox from "./ChatBox";
@@ -13,4 +13,4 @@ const ChatPage = () => {
   )
 }
 
-export default ChatPage;
+export default memo(ChatPage);
