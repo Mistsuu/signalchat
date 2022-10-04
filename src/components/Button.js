@@ -9,7 +9,7 @@ const Button = ({ onClick, width, height, children, className, ...otherProps }) 
   return (
     <>
       <Box 
-        className={clsx(classes.buttonSurface, className, "noselect")}
+        className={clsx(classes.buttonSurface, className)}
         onClick={onClick}
         width={width}
         height={height}
@@ -31,7 +31,8 @@ const Button = ({ onClick, width, height, children, className, ...otherProps }) 
 Button.defaultProps = {
   onClick: () => {},
   width: 37,
-  height: 33.5
+  height: 33.5,
+  className: "",
 };
 
 Button.propTypes = {
@@ -55,12 +56,12 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     textAlign: "center",
     cursor: "pointer",
-    background: "white",
+    background: "#f0f0f0",
     padding: 1,
     border: "solid 2.5px",
     borderRadius: 5,
-    borderColor: "black",
-    boxShadow: "0 5px #000",
+    borderColor: "#191919",
+    boxShadow: "0 5px #191919",
     '&:hover': {
       backgroundColor: "#cacbcc"
     },

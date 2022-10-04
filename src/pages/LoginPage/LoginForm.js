@@ -54,9 +54,16 @@ const LoginForm = props => {
       </Box>
 
       {/* Button */}
-      <Button width={100}>
-        <div>Login</div>
-      </Button>
+      <Box className={classes.btnHolder}>
+        {/* <Box style={{border: "solid red", marginLeft: "25%", marginRight: "25%"}}>
+          123
+        </Box> */}
+        <Button width={80} className={classes.overrideBtn}>
+          <Box className={classes.btnText}>
+            Login
+          </Box>
+        </Button>
+      </Box>
     </Box>
   )
 }
@@ -71,12 +78,28 @@ const INPUT_STYLES = {
 };
 
 const useStyles = makeStyles(theme => ({
+  overrideBtn: {
+    borderRadius: 15,
+    border: "solid 3px",
+    boxShadow: "none",
+  },
+
+  btnHolder: {
+    marginTop: 10,
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  btnText: {
+    fontFamily: "RobotoMono",
+    fontWeight: "bold",
+  },
+
   titleText: {
     fontFamily: "RobotoMono",
     fontSize: 35,
     fontWeight: "bold",
     paddingBottom: "10px",
-    fontStyle: "bold",
   },
 
   input: {
