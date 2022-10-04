@@ -16,8 +16,14 @@ const initDeviceId = () => {
     setLocalStorage(StorageConstant.DEVICE_ID, randomBufHex(32));
 }
 
+const initLoginState = () => {
+  if (getLocalStorage(StorageConstant.IS_LOGGED_IN) == undefined)
+    setLocalStorage(StorageConstant.IS_LOGGED_IN, false);
+}
+
 const preloadInit = () => {
   initDeviceId();
+  initLoginState();
 }
 
 module.exports = {

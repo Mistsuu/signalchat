@@ -36,8 +36,7 @@ export default memo(ChatItem);
 const useStyles = makeStyles(theme => ({
   chatText: {
     maxWidth: "80%",
-    marginTop: 12,
-    marginBottom: 12,
+    marginTop: 4,
     lineHeight: "24px",
     padding: "10px 20px",
     borderRadius: 25,

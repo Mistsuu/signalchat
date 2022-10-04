@@ -50,13 +50,13 @@ const useStyles = makeStyles(theme => ({
     margin: "20px",
     borderRadius: 15,
     borderStyle: "solid",
-    padding: "0px 3px 0px 10px",
+    padding: "0px 4px 0px 10px",
   },
 
   messageInnerWindow: {
     height: "100%",
     overflowY: "scroll",
-    padding: "0px 10px 0px 10px",
+    padding: "0px 10px 6px 10px",
     display: "flex",
     flexDirection: "column-reverse"
   }

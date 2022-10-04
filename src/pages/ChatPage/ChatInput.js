@@ -18,7 +18,6 @@ const ChatInput = ({ onUpdateNewMessage, ...otherProps }) => {
 
   return (
     <Box className={classes.chatInputWrapper}>
-
       <Box className={classes.inputType}>
         <TextField
           value={messageContent}
@@ -26,12 +25,7 @@ const ChatInput = ({ onUpdateNewMessage, ...otherProps }) => {
           onChange={e => setMessageContent(e.target.value)}
           className={classes.input}
           variant="standard"
-          InputProps={{
-            disableUnderline: true,
-            style: {
-              fontFamily: "RobotoMono",
-            }
-          }}
+          InputProps={INPUT_STYLES}
           onKeyDown={
             (event) => {
               if (event.key === "Enter") {
@@ -59,6 +53,13 @@ ChatInput.defaultProps = {
 };
 
 export default memo(ChatInput);
+
+const INPUT_STYLES = {
+  disableUnderline: true,
+  style: {
+    fontFamily: "RobotoMono",
+  }
+};
 
 const useStyles = makeStyles(theme => ({
   input: {
