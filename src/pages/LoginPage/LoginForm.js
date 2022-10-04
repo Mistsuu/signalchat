@@ -97,7 +97,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   btnHolder: {
-    marginTop: 10,
+    marginTop: 20,
     display: "flex",
     justifyContent: "center",
   },
@@ -117,7 +117,7 @@ const useStyles = makeStyles(theme => ({
   input: {
     width: "calc(100% - 30px)",
   },
-
+  
   inputType: {
     paddingBottom: 0,
     marginBottom: 5,
@@ -127,6 +127,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "#FFFFFF",
     height: 40,
     borderStyle: "solid",
+    boxShadow: "0 3px #212121",
   },
 
   loginAreaWrapper: {

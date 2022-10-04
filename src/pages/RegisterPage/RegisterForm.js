@@ -95,29 +95,29 @@ const useStyles = makeStyles(theme => ({
     color: "#999999",
     fontSize: 12,
   },
-
+  
   btnHolder: {
-    marginTop: 10,
+    marginTop: 20,
     display: "flex",
     justifyContent: "center",
   },
-
+  
   btnText: {
     fontFamily: "RobotoMono",
     fontWeight: "bold",
   },
-
+  
   titleText: {
     fontFamily: "RobotoMono",
     fontSize: 35,
     fontWeight: "bold",
     paddingBottom: "10px",
   },
-
+  
   input: {
     width: "calc(100% - 30px)",
   },
-
+  
   inputType: {
     paddingBottom: 0,
     marginBottom: 5,
@@ -127,6 +127,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "#FFFFFF",
     height: 40,
     borderStyle: "solid",
+    boxShadow: "0 3px #212121",
   },
 
   loginAreaWrapper: {

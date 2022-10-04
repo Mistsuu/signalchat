@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     '&:active': {
       backgroundColor: "#cacbcc",
       transform: "translateY(4px)",
-      boxShadow: "0 1px #000"
+      boxShadow: "0 1px #191919"
     }
   },
 }));
