@@ -1,7 +1,9 @@
 import React, { memo, useState } from "react";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { Box, TextField } from "@mui/material";
 import { Button } from "components";
+import { PathConstant } from "const";
 
 const LoginForm = props => {
   const [username, setUsername] = useState("");
@@ -17,6 +19,7 @@ const LoginForm = props => {
       {/* Username */}
       <Box className={classes.inputType}>
         <TextField
+          placeholder="username"
           value={username}
           autoFocus
           onChange={e => setUsername(e.target.value)}
@@ -36,6 +39,7 @@ const LoginForm = props => {
       {/* Password */}
       <Box className={classes.inputType}>
         <TextField
+          placeholder="password"
           value={password}
           autoFocus
           onChange={e => setPassword(e.target.value)}
@@ -55,15 +59,17 @@ const LoginForm = props => {
 
       {/* Button */}
       <Box className={classes.btnHolder}>
-        {/* <Box style={{border: "solid red", marginLeft: "25%", marginRight: "25%"}}>
-          123
-        </Box> */}
         <Button width={80} className={classes.overrideBtn}>
           <Box className={classes.btnText}>
             Login
           </Box>
         </Button>
       </Box>
+
+      {/* Change to register? */}
+      <Link to={PathConstant.PATH_REGISTER} className={classes.registerText}>
+        ... or register
+      </Link>
     </Box>
   )
 }
@@ -82,6 +88,12 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 15,
     border: "solid 3px",
     boxShadow: "none",
+  },
+
+  registerText: {
+    fontFamily: "RobotoMono",
+    color: "#999999",
+    fontSize: 12,
   },
 
   btnHolder: {

@@ -12,9 +12,9 @@ const LoginPage = () => {
   }
   
   return (
-    <Box>
+    <>
       <LoginForm/>
-    </Box>
+    </>
   )
 }
 

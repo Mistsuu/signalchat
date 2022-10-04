@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { Navigate } from "react-router-dom";
 import { getLocalStorage } from "utils/storage.util";
+import RegisterForm from "./RegisterForm";
 import { PathConstant, StorageConstant } from "const";
 
 const RegisterPage = () => {
@@ -11,7 +12,7 @@ const RegisterPage = () => {
 
   return (
     <>
-      <h1>Register Page</h1>
+      <RegisterForm/>
     </>
   )
 }
