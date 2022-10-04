@@ -1,8 +1,9 @@
 "use strict";
 const { contextBridge } = require("electron");
 
-// Clear everything in localStorage
-localStorage.clear();
+// Initialize data
+const { preloadInit } = require("./interactor/preload_init.interactor")
+preloadInit();
 
 // ------------------------------ EXPOSED ELECTRON APIS ------------------------------
 contextBridge.exposeInMainWorld("SignalConstant", {

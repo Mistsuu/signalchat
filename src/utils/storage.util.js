@@ -6,6 +6,6 @@ export const getLocalStorage = (key, defaultValue = null) => {
   return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : defaultValue;
 };
 
-export const removeLocalStorage = key => {
+export const rmLocalStorage = key => {
   localStorage.removeItem(key);
 };
