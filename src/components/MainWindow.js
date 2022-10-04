@@ -19,9 +19,9 @@ export default memo(MainWindow);
 const useStyles = makeStyles(theme => ({
   windowStyle: {
     borderStyle: "solid",
-    borderColor: "black",
+    borderColor: "#191919",
     height: "100vh",
-    borderRadius: "4.5px",
+    borderRadius: "0px",
     border: "5px"
   }
 }))

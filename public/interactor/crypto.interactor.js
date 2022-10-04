@@ -9,12 +9,12 @@ const {
   calculateAssociatedData,
   signalEncrypt,
   signalDecrypt,
-} = require("../utils/crypto.utils");
+} = require("../utils/crypto.util");
 
 const {
   buffer2Hex,
   hex2Buffer,
-} = require("../utils/buffer.utils");
+} = require("../utils/buffer.util");
 
 const {
   StorageConstant,

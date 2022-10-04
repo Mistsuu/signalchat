@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   titleBar: {
     height: "45px",
     display: "flex",
-    background: "black"
+    background: "#191919"
   },
   minimiseButton: {
     borderStyle: "solid",
