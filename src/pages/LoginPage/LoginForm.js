@@ -1,6 +1,7 @@
 import React, { memo, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Box, TextField } from "@mui/material";
+import { Button } from "components";
 
 const LoginForm = props => {
   const [username, setUsername] = useState("");
@@ -51,6 +52,11 @@ const LoginForm = props => {
           }
         />
       </Box>
+
+      {/* Button */}
+      <Button width={100}>
+        <div>Login</div>
+      </Button>
     </Box>
   )
 }

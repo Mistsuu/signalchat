@@ -1,25 +1,28 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
+import clsx from "clsx";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/material";
 
-const Button = ({ onClick, width, height, children, ...otherProps }) => {
+const Button = ({ onClick, width, height, children, className, ...otherProps }) => {
   const classes = useStyles();
-
   return (
     <>
       <Box 
-        className={classes.buttonSurface}
+        className={clsx(classes.buttonSurface, className, "noselect")}
         onClick={onClick}
         width={width}
         height={height}
       >
-        {React.cloneElement(
-          children, {
-            width: "100%",
-            height: "100%"
-          }
-        )}
+        {children 
+          ? React.cloneElement(
+              children, {
+                width: "100%",
+                height: "100%"
+              }
+            )
+          : <></>
+        }
       </Box>
     </>
   )
@@ -40,13 +43,15 @@ Button.propTypes = {
   height: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
-  ])
+  ]),
+  className: PropTypes.string,
 };
 
 export default memo(Button);
 
 const useStyles = makeStyles(theme => ({
   buttonSurface: {
+    userSelect: "none",
     display: "flex",
     textAlign: "center",
     cursor: "pointer",
