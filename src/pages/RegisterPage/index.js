@@ -35,7 +35,7 @@ const RegisterPage = () => {
     if (!isRegistering) {
       console.log(`registering in with username ${username}, password ${password}`);
       mutation.mutate({
-        username: username,
+        userID: username,
         password: password,
       });
     }

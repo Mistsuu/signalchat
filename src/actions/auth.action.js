@@ -19,11 +19,7 @@ async function authLogin(data) {
   });
 
   // Send data
-  var request = requestSchema.cast({
-                  userID: data.username,
-                  deviceID: data.deviceID,
-                  password: data.password,
-                });
+  var request = await requestSchema.validate(data);
   var response = await AuthApi.login(request);
 
   // Check output
@@ -54,15 +50,12 @@ async function authRegister(data) {
 
   let responseSchema = object({
     success: boolean().required(),
-    success: string().default(),
+    error: string().default(),
   });
 
   // Send data
-  var request = requestSchema.cast({
-                  userID: data.username,
-                  password: data.password,
-                });
-  var response = await AuthApi.login(request);
+  var request = await requestSchema.validate(data);
+  var response = await AuthApi.register(request);
 
   // Check output
   var success = false;
