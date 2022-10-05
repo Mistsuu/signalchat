@@ -1,11 +1,12 @@
 import React, { memo, useState } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 import { makeStyles } from "@mui/styles";
 import { Box, TextField } from "@mui/material";
 import { Button } from "components";
 import { PathConstant, TxtConstant } from "const";
 
-const LoginForm = props => {
+const LoginForm = ({onLogin, ...otherProps}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const classes = useStyles();
@@ -29,7 +30,7 @@ const LoginForm = props => {
           onKeyDown={
             (event) => {
               if (event.key === "Enter") {
-                console.log("enter!")
+                onLogin(username, password);
               }
             }
           }
@@ -50,7 +51,7 @@ const LoginForm = props => {
           onKeyDown={
             (event) => {
               if (event.key === "Enter") {
-                console.log("enter!")
+                onLogin(username, password);
               }
             }
           }
@@ -59,7 +60,7 @@ const LoginForm = props => {
 
       {/* Button */}
       <Box className={classes.btnHolder}>
-        <Button width={80} className={classes.overrideBtn}>
+        <Button width={80} className={classes.overrideBtn} onClick={() => onLogin(username, password)}>
           <Box className={classes.btnText}>
             {TxtConstant.TXT_LOGIN}
           </Box>
@@ -73,6 +74,14 @@ const LoginForm = props => {
     </Box>
   )
 }
+
+LoginForm.propTypes = {
+  onLogin: PropTypes.func,
+};
+
+LoginForm.defaultProps = {
+  onLogin: (username, password) => {}
+};
 
 export default memo(LoginForm);
 

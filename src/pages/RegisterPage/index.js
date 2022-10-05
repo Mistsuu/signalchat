@@ -10,9 +10,13 @@ const RegisterPage = () => {
     return <Navigate to={PathConstant.PATH_HOME}/>
   }
 
+  const onRegister = (username, password) => {
+    console.log(`registering in with username ${username}, password ${password}`);    
+  }
+
   return (
     <>
-      <RegisterForm/>
+      <RegisterForm onRegister={onRegister}/>
     </>
   )
 }

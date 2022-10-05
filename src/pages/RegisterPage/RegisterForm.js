@@ -1,11 +1,12 @@
 import React, { memo, useState } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 import { makeStyles } from "@mui/styles";
 import { Box, TextField } from "@mui/material";
 import { Button } from "components";
 import { PathConstant, TxtConstant } from "const";
 
-const RegisterForm = props => {
+const RegisterForm = ({onRegister, ...otherProps}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const classes = useStyles();
@@ -29,7 +30,7 @@ const RegisterForm = props => {
           onKeyDown={
             (event) => {
               if (event.key === "Enter") {
-                console.log("enter!")
+                onRegister(username, password);
               }
             }
           }
@@ -50,7 +51,7 @@ const RegisterForm = props => {
           onKeyDown={
             (event) => {
               if (event.key === "Enter") {
-                console.log("enter!")
+                onRegister(username, password);
               }
             }
           }
@@ -59,7 +60,7 @@ const RegisterForm = props => {
 
       {/* Button */}
       <Box className={classes.btnHolder}>
-        <Button width={120} className={classes.overrideBtn}>
+        <Button width={120} className={classes.overrideBtn} onClick={() => onRegister(username, password)}>
           <Box className={classes.btnText}>
             {TxtConstant.TXT_REGISTER}
           </Box>
@@ -72,6 +73,14 @@ const RegisterForm = props => {
       </Link>
     </Box>
   )
+}
+
+RegisterForm.propTypes = {
+  onRegister: PropTypes.func,
+};
+
+RegisterForm.defaultProps = {
+  onRegister: (username, password) => {}
 }
 
 export default memo(RegisterForm);
