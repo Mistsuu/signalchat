@@ -9,13 +9,13 @@ async function authLogin(data) {
   // Create schemas
   let requestSchema = object({
     userID: string().required(),
-    deviceID: string().required(),
+    deviceID: string().default("1234"), // TODO: Change it to getLocalStorage(DEVICE_ID)
     password: string().required(),
   });
 
   let responseSchema = object({
     success: boolean().required(),
-    error: string().required().default(""),
+    error: string().default(),
   });
 
   // Send data
@@ -27,7 +27,8 @@ async function authLogin(data) {
   var error = "";
   if (response.ok) {
     try {
-      await responseSchema.validate(response.data);
+      var data = await responseSchema.validate(response.data);
+      return data;
     } catch (err) {
       error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
     }

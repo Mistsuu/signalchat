@@ -3,8 +3,8 @@ import { Navigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AuthAction } from "actions";
 import { getLocalStorage } from "utils/storage.util";
-import RegisterForm from "./RegisterForm";
 import { PathConstant, StorageConstant } from "const";
+import RegisterForm from "./RegisterForm";
 
 const RegisterPage = () => {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -15,10 +15,10 @@ const RegisterPage = () => {
                                   setIsRegistering(true);
                                 },
                                 onError: (error, variables, context) => {
-                                  console.log(error);
+                                  console.log("error", error);
                                 },
                                 onSuccess: (data, variables, context) => {
-                                  console.log(data);
+                                  console.log("yey", data);
                                 },
                                 onSettled: () => {
                                   setIsRegistering(false);
@@ -33,7 +33,6 @@ const RegisterPage = () => {
 
   const onRegister = (username, password) => {
     if (!isRegistering) {
-      console.log(`registering in with username ${username}, password ${password}`);
       mutation.mutate({
         userID: username,
         password: password,
