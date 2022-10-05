@@ -2315,6 +2315,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.63.tgz#af57f6d2c3fb17a571230d527003dd734a9109b2"
   integrity sha512-3OxnrEQLBz8EIIaHpg3CibmTAEGkDBcHY4fL5cnBwg2vd2yvHrUDGWxK+MlYPeXWWIoJJW79dGtU+oeBr6166Q==
 
+"@types/node@^16.4.7":
+  version "16.11.64"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.64.tgz#9171f327298b619e2c52238b120c19056415d820"
+  integrity sha512-z5hPTlVFzNwtJ2LNozTpJcD1Cu44c4LNuzaq1mwxmiHWQh2ULdR6Vjwo1UGldzRpzL0yUEdZddnfqGW2G70z6Q==
+
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
@@ -5092,6 +5097,13 @@ get-symbol-description@^1.0.0:
   dependencies:
     call-bind "^1.0.2"
     get-intrinsic "^1.1.1"
+
+getmac@^5.20.0:
+  version "5.20.0"
+  resolved "https://registry.yarnpkg.com/getmac/-/getmac-5.20.0.tgz#d549e69da95393084ede7881b9996f94d89e34df"
+  integrity sha512-O9T855fb+Hx9dsTJHNv72ZUuA6Y18+BO/0ypPXf6s/tunzXqhc3kbQkNAl+9HVKVlwkWmglHS4LMoJ9YbymKYQ==
+  dependencies:
+    "@types/node" "^16.4.7"
 
 glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"

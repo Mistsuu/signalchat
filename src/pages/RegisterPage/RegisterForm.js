@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { Box, TextField } from "@mui/material";
 import { Button } from "components";
-import { PathConstant } from "const";
+import { PathConstant, TxtConstant } from "const";
 
 const RegisterForm = props => {
   const [username, setUsername] = useState("");
@@ -13,13 +13,13 @@ const RegisterForm = props => {
   return (
     <Box className={classes.loginAreaWrapper}>
       <Box className={classes.titleText}>
-        Register
+        {TxtConstant.TXT_REGISTER}
       </Box>
 
       {/* Username */}
       <Box className={classes.inputType}>
         <TextField
-          placeholder="username"
+          placeholder={TxtConstant.TXT_USERNAME}
           value={username}
           autoFocus
           onChange={e => setUsername(e.target.value)}
@@ -39,7 +39,7 @@ const RegisterForm = props => {
       {/* Password */}
       <Box className={classes.inputType}>
         <TextField
-          placeholder="password"
+          placeholder={TxtConstant.TXT_PASSWORD}
           value={password}
           autoFocus
           onChange={e => setPassword(e.target.value)}
@@ -61,14 +61,14 @@ const RegisterForm = props => {
       <Box className={classes.btnHolder}>
         <Button width={120} className={classes.overrideBtn}>
           <Box className={classes.btnText}>
-            Register
+            {TxtConstant.TXT_REGISTER}
           </Box>
         </Button>
       </Box>
 
-      {/* Change to register? */}
+      {/* Change to login? */}
       <Link to={PathConstant.PATH_LOGIN} className={classes.loginText}>
-        ... or login
+        {TxtConstant.TXT_OR_LOGIN}
       </Link>
     </Box>
   )

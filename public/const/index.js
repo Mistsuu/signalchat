@@ -5,6 +5,7 @@ const StorageConstant = require("./storage.const");
 const ApiConstant = require('./api.const');
 const QueryConstant = require('./query.const');
 const PathConstant = require('./path.const');
+const TxtConstant = require("./txt.const");
 
 module.exports = {
   AppConstant,
@@ -14,4 +15,5 @@ module.exports = {
   ApiConstant,
   QueryConstant,
   PathConstant,
+  TxtConstant,
 };

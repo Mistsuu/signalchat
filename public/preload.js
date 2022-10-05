@@ -2,8 +2,8 @@
 const { contextBridge } = require("electron");
 
 // Initialize data
-const { preloadInit } = require("./interactor/preload_init.interactor")
-preloadInit();
+// const { preloadInit } = require("./interactor/preload_init.interactor")
+// preloadInit();
 
 // ------------------------------ EXPOSED ELECTRON APIS ------------------------------
 contextBridge.exposeInMainWorld("SignalConstant", {
@@ -27,6 +27,9 @@ contextBridge.exposeInMainWorld("SignalConstant", {
   },
   path: {
     ...require("./const/path.const")
+  },
+  txt: {
+    ...require("./const/txt.const")
   },
 })
 
