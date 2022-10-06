@@ -2,8 +2,8 @@ import React, { memo, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AuthAction } from "actions";
-import { getLocalStorage } from "utils/storage.util";
-import { PathConstant, StorageConstant } from "const";
+import { getLocalStorage, setLocalStorage } from "utils/storage.util";
+import { ApiConstant, PathConstant, StorageConstant } from "const";
 import LoginForm from "./LoginForm";
 
 const LoginPage = () => {
@@ -15,10 +15,19 @@ const LoginPage = () => {
                                   setIsLogginIn(true);
                                 },
                                 onError: (error, variables, context) => {
-                                  console.log("error", error);
+                                  // TODO: Set data so that the notification badge display on screen.
+                                  console.log("error login", error);
                                 },
                                 onSuccess: (data, variables, context) => {
-                                  console.log("yey", data);
+                                  if (data.success) {
+                                    // TODO: Set data so that the notification badge display on screen.
+                                    console.log("login set success notification badge");
+                                    setLocalStorage(StorageConstant.AUTH_TOKEN, data.token);
+                                    window.location.href = PathConstant.PATH_HOME;
+                                  } else {
+                                    // TODO: Set data so that the notification badge display on screen.
+                                    console.log("login set error notification badge");
+                                  }
                                 },
                                 onSettled: () => {
                                   setIsLogginIn(false);
@@ -26,7 +35,7 @@ const LoginPage = () => {
                               });
 
   // Redirect to home page if user is logged in!
-  if (getLocalStorage(StorageConstant.IS_LOGGED_IN)) {
+  if (getLocalStorage(StorageConstant.AUTH_TOKEN)) {
     return <Navigate to={PathConstant.PATH_HOME}/>
   }
 

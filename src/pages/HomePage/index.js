@@ -5,7 +5,7 @@ import { getLocalStorage } from "utils/storage.util";
 import { PathConstant, StorageConstant } from "const";
 
 const HomePage = () => {
-  if (!getLocalStorage(StorageConstant.IS_LOGGED_IN)) {
+  if (!getLocalStorage(StorageConstant.AUTH_TOKEN)) {
     return <Navigate to={PathConstant.PATH_LOGIN}/>
   }
 

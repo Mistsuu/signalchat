@@ -15,10 +15,18 @@ const RegisterPage = () => {
                                   setIsRegistering(true);
                                 },
                                 onError: (error, variables, context) => {
-                                  console.log("error", error);
+                                  // TODO: Set data so that the notification badge display on screen.
+                                  console.log("error register", error);
                                 },
                                 onSuccess: (data, variables, context) => {
-                                  console.log("yey", data);
+                                  if (data.success) {
+                                    // TODO: Set data so that the notification badge display on screen.
+                                    console.log("register set success notification badge");
+                                    window.location.href = PathConstant.PATH_LOGIN;
+                                  } else {
+                                    // TODO: Set data so that the notification badge display on screen.
+                                    console.log("register set error notification badge");
+                                  }
                                 },
                                 onSettled: () => {
                                   setIsRegistering(false);
@@ -27,7 +35,7 @@ const RegisterPage = () => {
 
 
   // Redirect to home page if user is logged in!
-  if (getLocalStorage(StorageConstant.IS_LOGGED_IN)) {
+  if (getLocalStorage(StorageConstant.AUTH_TOKEN)) {
     return <Navigate to={PathConstant.PATH_HOME}/>
   }
 
