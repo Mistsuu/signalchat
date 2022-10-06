@@ -15,6 +15,7 @@ const STT_INTERNAL_SERVER = 500;
 
 // API
 const API_TEST = "/test";
+const API_TESTAUTH = "/test-auth";
 const API_LOGIN = "/login";
 const API_REGISTER = "/register";
 
@@ -32,6 +33,7 @@ module.exports = {
   STT_INTERNAL_SERVER,
   // API
   API_TEST,
+  API_TESTAUTH,
   API_LOGIN,
   API_REGISTER,
 };

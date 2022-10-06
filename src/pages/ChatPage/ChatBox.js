@@ -17,8 +17,6 @@ const ChatBox = props => {
       side: SystemConstant.CHAT_SIDE_TYPE.our,
     }
 
-    TestAction.getAuthorTest();
-
     setMessages([ newMessage, ...messages ]);
   }
 
