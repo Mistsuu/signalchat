@@ -17,3 +17,9 @@ export const createAPI = (initConfig) => {
   initConfig = initConfig ? initConfig : DEFAULT_API_CONFIG;
   return apisauce.create(initConfig);
 }
+
+export const createAPIWithToken = (initConfig) => {
+  initConfig = initConfig ? initConfig : DEFAULT_API_CONFIG;
+  initConfig.headers.Authorization = "Bearer fuckyou123";
+  return apisauce.create(initConfig);
+}

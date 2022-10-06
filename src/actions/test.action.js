@@ -18,8 +18,27 @@ async function postTest(data) {
   }
 };
 
+async function getAuthorTest() {
+  var response = await TestApi.testAuthorizationGet();
+  if (response.ok) {
+    return response.data;
+  } else {
+    throw response.problem;
+  }
+};
+
+async function postAuthorTest() {
+  var response = await TestApi.testAuthorizationGet();
+  if (response.ok) {
+    return response.data;
+  } else {
+    throw response.problem;
+  }
+};
 
 export {
   fetchTest,
-  postTest
+  postTest,
+  getAuthorTest,
+  postAuthorTest,
 };

@@ -15,14 +15,14 @@ const App = () => {
       <MainWindow>
         <TitleBar/>
         <CssBaseline/>
-        {/* <ChatPage/> */}
-        <HashRouter>
+        <ChatPage/>
+        {/* <HashRouter>
           <Routes>
             <Route path={PathConstant.PATH_HOME} element={<HomePage/>}/>
             <Route path={PathConstant.PATH_LOGIN} element={<LoginPage/>}/>
             <Route path={PathConstant.PATH_REGISTER} element={<RegisterPage/>}/>
           </Routes>
-        </HashRouter>
+        </HashRouter> */}
       </MainWindow>
       <ReactQueryDevtools />
     </QueryClientProvider>
