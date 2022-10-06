@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AuthAction } from "actions";
 import { getLocalStorage, setLocalStorage } from "utils/storage.util";
-import { ApiConstant, PathConstant, StorageConstant } from "const";
+import { PathConstant, StorageConstant, TxtConstant } from "const";
 import LoginForm from "./LoginForm";
 
 const LoginPage = () => {
@@ -16,17 +16,17 @@ const LoginPage = () => {
                                 },
                                 onError: (error, variables, context) => {
                                   // TODO: Set data so that the notification badge display on screen.
-                                  console.log("error login", error);
+                                  alert(error);
                                 },
                                 onSuccess: (data, variables, context) => {
                                   if (data.success) {
                                     // TODO: Set data so that the notification badge display on screen.
-                                    console.log("login set success notification badge");
+                                    // alert(TxtConstant.TXT_SUCCESSFULLY_LOGGED_IN);
                                     setLocalStorage(StorageConstant.AUTH_TOKEN, data.token);
                                     window.location.href = PathConstant.PATH_HOME;
                                   } else {
                                     // TODO: Set data so that the notification badge display on screen.
-                                    console.log("login set error notification badge");
+                                    alert(data.error);
                                   }
                                 },
                                 onSettled: () => {

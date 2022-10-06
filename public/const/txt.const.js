@@ -5,6 +5,8 @@ const TXT_USERNAME = "username";
 const TXT_PASSWORD = "password";
 const TXT_OR_LOGIN = "... or login";
 const TXT_OR_REGISTER = "... or register";
+const TXT_SUCCESSFULLY_LOGGED_IN = "Successfully logged in!";
+const TXT_SUCCESSFULLY_REGISTER = "Register successfully!";
 
 // Errors
 const ERR_INVALID_RESPONSE_FROM_SERVER = "Invalid response from server!";
@@ -21,6 +23,8 @@ module.exports = {
   TXT_PASSWORD,
   TXT_OR_LOGIN,
   TXT_OR_REGISTER,
+  TXT_SUCCESSFULLY_LOGGED_IN,
+  TXT_SUCCESSFULLY_REGISTER,
   // Errors
   ERR_INVALID_RESPONSE_FROM_SERVER,
   // Formats

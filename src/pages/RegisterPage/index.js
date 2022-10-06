@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AuthAction } from "actions";
 import { getLocalStorage } from "utils/storage.util";
-import { PathConstant, StorageConstant } from "const";
+import { PathConstant, StorageConstant, TxtConstant } from "const";
 import RegisterForm from "./RegisterForm";
 
 const RegisterPage = () => {
@@ -16,16 +16,16 @@ const RegisterPage = () => {
                                 },
                                 onError: (error, variables, context) => {
                                   // TODO: Set data so that the notification badge display on screen.
-                                  console.log("error register", error);
+                                  alert(error);
                                 },
                                 onSuccess: (data, variables, context) => {
                                   if (data.success) {
                                     // TODO: Set data so that the notification badge display on screen.
-                                    console.log("register set success notification badge");
+                                    // alert(TxtConstant.TXT_SUCCESSFULLY_REGISTER);
                                     window.location.href = PathConstant.PATH_LOGIN;
                                   } else {
                                     // TODO: Set data so that the notification badge display on screen.
-                                    console.log("register set error notification badge");
+                                    alert(data.error);
                                   }
                                 },
                                 onSettled: () => {
