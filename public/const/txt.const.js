@@ -14,6 +14,7 @@ const ERR_INVALID_RESPONSE_FROM_SERVER = "Invalid response from server!";
 // Formats
 const FM_ERROR = "Error: {0}"
 const FM_REQUEST_ERROR = "Request Error: {0}"
+const FM_DB_PATH = "{0}/{1}.json"
 
 module.exports = {
   // Normal texts
@@ -30,4 +31,5 @@ module.exports = {
   // Formats
   FM_ERROR,
   FM_REQUEST_ERROR,
+  FM_DB_PATH,
 }
