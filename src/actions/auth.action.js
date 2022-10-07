@@ -2,13 +2,11 @@ import StringFormat from "string-format";
 import { object, string, boolean, array } from "yup";
 import { AuthApi } from "api";
 import { TxtConstant } from "const";
-import { getDeviceID } from "utils/storage.util";
 
 async function authLogin(data) {
   // Create schemas
   let requestSchema = object({
     userID: string().required(),
-    deviceID: string().default(getDeviceID()), // TODO: Change it to getLocalStorage(DEVICE_ID), requiring set the value at initialization.
     password: string().required(),
   });
 
@@ -16,6 +14,7 @@ async function authLogin(data) {
     success: boolean().required(),
     error: string().default(""),
     token: string().default(""),
+    deviceID: string().default(""),
   })
 
   // Send data

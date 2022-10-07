@@ -23,6 +23,7 @@ const LoginPage = () => {
                                     // TODO: Set data so that the notification badge display on screen.
                                     // alert(TxtConstant.TXT_SUCCESSFULLY_LOGGED_IN);
                                     setLocalStorage(StorageConstant.AUTH_TOKEN, data.token);
+                                    setLocalStorage(StorageConstant.DEVICE_ID, data.deviceID);
                                     window.location.href = PathConstant.PATH_HOME;
                                   } else {
                                     // TODO: Set data so that the notification badge display on screen.

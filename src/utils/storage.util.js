@@ -11,10 +11,3 @@ export const getLocalStorage = (key, defaultValue = null) => {
 export const rmLocalStorage = key => {
   localStorage.removeItem(key);
 };
-
-// Only when data is required at lookup, then we define here!
-export const getDeviceID = () => {
-  if (getLocalStorage(StorageConstant.DEVICE_ID) === null)
-    setLocalStorage(StorageConstant.DEVICE_ID, crypto.randomUUID());
-  return getLocalStorage(StorageConstant.DEVICE_ID);
-}
