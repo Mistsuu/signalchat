@@ -27,8 +27,8 @@ async function getAuthorTest() {
   }
 };
 
-async function postAuthorTest() {
-  var response = await TestApi.testAuthorizationPost();
+async function postAuthorTest(data) {
+  var response = await TestApi.testAuthorizationPost(data);
   if (response.ok) {
     return response.data;
   } else {
