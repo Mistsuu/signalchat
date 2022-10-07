@@ -1,10 +1,6 @@
 "use strict";
 const { contextBridge } = require("electron");
 
-// Initialize data
-// const { preloadInit } = require("./interactor/preload_init.interactor")
-// preloadInit();
-
 // ------------------------------ EXPOSED ELECTRON APIS ------------------------------
 contextBridge.exposeInMainWorld("SignalConstant", {
   app: {
@@ -33,11 +29,15 @@ contextBridge.exposeInMainWorld("SignalConstant", {
   },
 })
 
-contextBridge.exposeInMainWorld("interactor", {
+contextBridge.exposeInMainWorld("SignalInteractor", {
   app: {
     ...require("./interactor/app.interactor")
   },
   crypto: {
     ...require("./interactor/crypto.interactor")
   },
+})
+
+contextBridge.exposeInMainWorld("SignalModel", {
+  // TODO: List of models.
 })
