@@ -27,3 +27,6 @@ package-lock.json
 
 # yarn
 yarn.lock
+
+# db files
+/jsondb
