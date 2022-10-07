@@ -11,6 +11,8 @@ const {
   signalDecrypt,
   innerEncrypt,
   innerDecrypt,
+  serializeRachetHeader,
+  deserializeRachetHeader,
 } = require("../utils/crypto.util");
 
 const {
@@ -90,5 +92,7 @@ module.exports = {
   innerDecrypt,
   signalEncrypt,
   signalDecrypt,
+  serializeRachetHeader,
+  deserializeRachetHeader,
   calculateAssociatedData,
 }

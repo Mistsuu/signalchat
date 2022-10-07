@@ -133,6 +133,22 @@ const signalDecrypt = (rachetState, rachetHeader, ciphertext, associatedData) =>
   return SignalProto_NativeObj.signalDecrypt(rachetState, rachetHeader, ciphertext, associatedData);
 }
 
+//
+//  @param rachetHeader ...
+//  returns {Buffer}
+//
+const serializeRachetHeader = (rachetHeader) => {
+  return SignalProto_NativeObj.serializeRachetHeader(rachetHeader);
+}
+
+//
+//  @param serializedRachetHeader {Buffer}
+//  returns ...
+//
+const deserializeRachetHeader = (serializedRachetHeader) => {
+  return SignalProto_NativeObj.deserializeRachetHeader(serializedRachetHeader);
+}
+
 module.exports = {
   generateKeyPair,
   calculateSignature,
@@ -146,4 +162,6 @@ module.exports = {
   innerDecrypt,
   signalEncrypt,
   signalDecrypt,
+  serializeRachetHeader,
+  deserializeRachetHeader,
 }
