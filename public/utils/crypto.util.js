@@ -93,6 +93,26 @@ const calculateAssociatedData = (alicePrekeyBundle, bobPrekeyBundle) => {
 }
 
 //
+//  @param messageKey {Buffer}
+//  @param plaintext {Buffer}
+//  @param associatedData {Buffer}
+//  returns {Buffer}
+//
+const innerEncrypt = (messageKey, plaintext, associatedData) => {
+  return SignalProto_NativeObj.innerEncrypt(messageKey, plaintext, associatedData);
+}
+
+//  @param messageKey {Buffer}
+//  @param ciphertext {Buffer}
+//  @param associatedData {Buffer}
+//  returns {Buffer}
+//
+const innerDecrypt = (messageKey, ciphertext, associatedData) => {
+  return SignalProto_NativeObj.innerEncrypt(messageKey, ciphertext, associatedData);
+}
+
+
+//
 //  @param rachetState ...
 //  @param plaintext {Buffer}
 //  @param associatedData {Buffer}
@@ -122,6 +142,8 @@ module.exports = {
   rachetInitAlice,
   rachetInitBob,
   calculateAssociatedData,
+  innerEncrypt,
+  innerDecrypt,
   signalEncrypt,
   signalDecrypt,
 }

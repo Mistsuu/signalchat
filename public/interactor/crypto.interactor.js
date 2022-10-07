@@ -9,6 +9,8 @@ const {
   calculateAssociatedData,
   signalEncrypt,
   signalDecrypt,
+  innerEncrypt,
+  innerDecrypt,
 } = require("../utils/crypto.util");
 
 const {
@@ -52,7 +54,7 @@ const generateAlicePrekeyBundle = () => {
   return alicePrekeyBundle;
 }
 
-const generateBobPrekeysBundle = () => {
+const generateBobPrekeyBundle = () => {
   let bobPrekeysBundle = {};
   bobPrekeysBundle[IDENTITY_KEY] = getIdentityKey();
   bobPrekeysBundle[SIGNED_PREKEY] = generateKeyPair();
@@ -77,13 +79,15 @@ const verifyBobPrekeyBundle = (bobPrekeyBundle) => {
 module.exports = {
   getIdentityKey,
   generateAlicePrekeyBundle,
-  generateBobPrekeysBundle,
+  generateBobPrekeyBundle,
   generateKeyPair,
   verifyBobPrekeyBundle,
   rachetInitAlice,
   rachetInitBob,
   calculateSharedSecretA,
   calculateSharedSecretB,
+  innerEncrypt,
+  innerDecrypt,
   signalEncrypt,
   signalDecrypt,
   calculateAssociatedData,

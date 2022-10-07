@@ -15,6 +15,7 @@ async function authLogin(data) {
     error: string().default(""),
     token: string().default(""),
     deviceID: string().default(""),
+    userID: string().default(""),
   })
 
   // Send data
@@ -24,7 +25,6 @@ async function authLogin(data) {
   // Check output
   var success = false;
   var error = "";
-  var token = "";
   if (response.ok) {
     try {
       var data = await responseSchema.validate(response.data);
@@ -39,7 +39,6 @@ async function authLogin(data) {
   return responseSchema.cast({
     success: success,
     error: error,
-    token: token,
   });
 };
 
