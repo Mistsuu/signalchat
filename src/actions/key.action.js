@@ -34,10 +34,32 @@ async function writePreKeyBundleToDB(prekeyBundle) {
     });
 }
 
-export async function initKeys() {
-  // TODO: Fetch keys from database, or generate if it doesn't exist.
-  var prekeyBundle = CryptoInteractor.generateBobPrekeyBundle();
+function fetchKeysFromDB() {
+  var prekeyBundle = {};
+  
+  // Set identity key.
+  const identityKeyRecord = PrekeyModel.findOne({keyType: SystemConstant.KEY_TYPE.identity});
+  if (identityKeyRecord === null) 
+    return null;
+  prekeyBundle.identityKey = identityKeyRecord.publicKey;
 
+  // Set signed prekey.
+  const signedPrekeyRecord = PrekeyModel.findOne({keyType: SystemConstant.KEY_TYPE.signedPrekey});
+  if (signedPrekeyRecord === null)
+    return null;
+  prekeyBundle.signedPrekey = signedPrekeyRecord.publicKey;
+  prekeyBundle.signature = signedPrekeyRecord.signature;
+
+  // Set onetime prekeys.
+  const onetimePrekeyRecords = PrekeyModel.findAll({keyType: SystemConstant.KEY_TYPE.onetimePrekey});
+  if (!onetimePrekeyRecords)
+    return null;
+  prekeyBundle.onetimePrekeys = onetimePrekeyRecords.map(record => record.publicKey);
+
+  return prekeyBundle;
+}
+
+export async function initKeys() {
   // Create schema
   let requestSchema = object({
     identityKey: string().required(),
@@ -51,13 +73,28 @@ export async function initKeys() {
     error: string().default(""),
   })
 
+  // Fetch keys from database, or generate if it doesn't exist.
+  var prekeyBundle = fetchKeysFromDB();
+  var isGenerateNewKeys = (prekeyBundle === null);
+  var request = null;
+  if (isGenerateNewKeys) {
+    prekeyBundle = CryptoInteractor.generateBobPrekeyBundle();
+    request = await requestSchema.validate({
+      identityKey: bufferToHex(prekeyBundle.identityKey.publicKey),
+      signedPrekey: bufferToHex(prekeyBundle.signedPreKey.publicKey),
+      signature: bufferToHex(prekeyBundle.signature),
+      onetimePrekeys: prekeyBundle.oneTimePreKeys.map(onetimePrekey => bufferToHex(onetimePrekey.publicKey)),
+    });
+  } else {
+    request = await requestSchema.validate({
+      identityKey: prekeyBundle.identityKey,
+      signedPrekey: prekeyBundle.signedPrekey,
+      signature: prekeyBundle.signature,
+      onetimePrekeys: prekeyBundle.onetimePrekeys,
+    });
+  }
+
   // Send data
-  var request = await requestSchema.validate({
-    identityKey: bufferToHex(prekeyBundle.identityKey.publicKey),
-    signedPrekey: bufferToHex(prekeyBundle.signedPreKey.publicKey),
-    signature: bufferToHex(prekeyBundle.signature),
-    onetimePrekeys: prekeyBundle.oneTimePreKeys.map(onetimePrekey => bufferToHex(onetimePrekey.publicKey)),
-  });
   var response = await KeyApi.initKeys(request);
 
   // Check output
@@ -69,22 +106,21 @@ export async function initKeys() {
   });
 
   if (response.ok) {
-    // Validate input!
     try {
+      // Validate input
       data = await responseSchema.validate(response.data);
+      
+      // Write keys to database if upload is successful!
+      try {
+        if (data.success && isGenerateNewKeys)
+          await writePreKeyBundleToDB(prekeyBundle);
+        return data;
+      } catch (err) {
+        error = StringFormat(TxtConstant.FM_DATABASE_ERROR, err);
+      }
     } catch (err) {
       error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
     }
-
-    // Write keys to database if upload is successful!
-    try {
-      if (data.success)
-        await writePreKeyBundleToDB(prekeyBundle);
-      return data;
-    } catch (err) {
-      error = StringFormat(TxtConstant.FM_DATABASE_ERROR, err);
-    }
-
   } else {
     error = StringFormat(TxtConstant.FM_REQUEST_ERROR, response.problem);
   }

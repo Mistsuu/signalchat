@@ -35,18 +35,24 @@ const {
   SIGNATURE,
 } = require("../const/native.const");
 
-const getIdentityKey = () => {
-  if (!localStorage.getItem(StorageConstant.IDENTITY_KEY_PUBLIC)
-   || !localStorage.getItem(StorageConstant.IDENTITY_KEY_PRIVATE)) {
-    let keyPair = generateKeyPair();
-    localStorage.setItem(StorageConstant.IDENTITY_KEY_PUBLIC, buffer2Hex(keyPair[PUBLIC_KEY]));
-    localStorage.setItem(StorageConstant.IDENTITY_KEY_PRIVATE, buffer2Hex(keyPair[PRIVATE_KEY]));
-  }
+const PrekeyModel = require("../models/prekey.model");
 
-  return {
-    [PUBLIC_KEY]: hex2Buffer(localStorage.getItem(StorageConstant.IDENTITY_KEY_PUBLIC)),
-    [PRIVATE_KEY]: hex2Buffer(localStorage.getItem(StorageConstant.IDENTITY_KEY_PRIVATE))
-  }
+const getIdentityKey = () => {
+  var identityKeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.identity });
+  if (identityKeyRecord !== null) {
+    return {
+      [PUBLIC_KEY]: hex2Buffer(identityKeyRecord.publicKey),
+      [PRIVATE_KEY]: hex2Buffer(identityKeyRecord.privateKey)
+    }
+  } 
+  
+  let keyPair = generateKeyPair();
+  PrekeyModel.create({ 
+    keyType: SystemConstant.KEY_TYPE.identity,
+    publicKey: buffer2Hex(keyPair[PUBLIC_KEY]),
+    privateKey: buffer2Hex(keyPair[PRIVATE_KEY]),
+  });
+  return keyPair;
 }
 
 const generateAlicePrekeyBundle = () => {
