@@ -135,7 +135,7 @@ const findOneByIdAndRemove = (dbFilepath, id) => {
   return null;
 }
 
-const findOneAndUpdateSet = async (model, dbFilepath, constraints, setValues) => {
+const findOneAndUpdate = async (model, dbFilepath, constraints, setValues) => {
   if (!(setValues instanceof Object))
     return null;
 
@@ -194,7 +194,7 @@ const generate = (model, dbName) => {
     findOneById: (id) => findOneById(dbFilepath, id),
     findOneByIdAndRemove: (id) => findOneByIdAndRemove(dbFilepath, id),
     findOneAndRemove: (constrants) => findOneAndRemove(dbFilepath, constrants),
-    findOneAndUpdateSet: (constraints, setValues) => findOneAndUpdateSet(model, dbFilepath, constraints, setValues),
+    findOneAndUpdate: (constraints, setValues) => findOneAndUpdate(model, dbFilepath, constraints, setValues),
   }
 }
 
