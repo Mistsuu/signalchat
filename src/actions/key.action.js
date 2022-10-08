@@ -35,7 +35,7 @@ async function writePreKeyBundleToDB(prekeyBundle) {
 }
 
 export async function initKeys() {
-  // Generate prekey bundle.
+  // TODO: Fetch keys from database, or generate if it doesn't exist.
   var prekeyBundle = CryptoInteractor.generateBobPrekeyBundle();
 
   // Create schema
