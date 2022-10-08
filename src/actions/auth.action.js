@@ -3,7 +3,7 @@ import { object, string, boolean, array } from "yup";
 import { AuthApi } from "api";
 import { TxtConstant } from "const";
 
-async function authLogin(data) {
+export async function authLogin(data) {
   // Create schemas
   let requestSchema = object({
     userID: string().required(),
@@ -42,7 +42,7 @@ async function authLogin(data) {
   });
 };
 
-async function authRegister(data) {
+export async function authRegister(data) {
   // Create schemas
   let requestSchema = object({
     userID: string().required(),
@@ -76,9 +76,4 @@ async function authRegister(data) {
     success: success,
     error: error,
   });
-};
-
-export {
-  authLogin,
-  authRegister,
 };

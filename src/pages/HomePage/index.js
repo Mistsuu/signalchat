@@ -1,11 +1,11 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { makeStyles } from "@mui/styles";
-import { getLocalStorage } from "utils/storage.util";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getLocalStorage, setLocalStorage } from "utils/storage.util";
 import { PathConstant, StorageConstant } from "const";
 
 const HomePage = () => {
-  if (!getLocalStorage(StorageConstant.AUTH_TOKEN)) {
+  if (!getLocalStorage(StorageConstant.IS_LOGGED_IN)) {
     return <Navigate to={PathConstant.PATH_LOGIN}/>
   }
 

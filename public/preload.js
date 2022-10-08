@@ -39,5 +39,5 @@ contextBridge.exposeInMainWorld("SignalInteractor", {
 })
 
 contextBridge.exposeInMainWorld("SignalModel", {
-  prekey: require("./models/prekey.model"),
+  Prekey: require("./models/prekey.model"),
 })

@@ -4,7 +4,8 @@ const BaseModel = require('./base.model');
 
 const prekeySchema = object({
   keyType: number().required().oneOf(Object.values(SystemConstant.KEY_TYPE)),
-  key: string().required(),
+  publicKey: string().required(),
+  privateKey: string().required(),
   signature: string().default(""),
 });
 

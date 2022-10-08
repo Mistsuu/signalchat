@@ -18,6 +18,8 @@ const API_TEST = "/test";
 const API_TESTAUTH = "/test-auth";
 const API_LOGIN = "/login";
 const API_REGISTER = "/register";
+const API_INITKEY = "/initkey";
+const API_UPDATEONETIME = "/updateOneTime";
 
 module.exports = {
   // Common
@@ -36,4 +38,6 @@ module.exports = {
   API_TESTAUTH,
   API_LOGIN,
   API_REGISTER,
+  API_INITKEY,
+  API_UPDATEONETIME,
 };

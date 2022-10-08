@@ -57,17 +57,17 @@ const generateAlicePrekeyBundle = () => {
 }
 
 const generateBobPrekeyBundle = () => {
-  let bobPrekeysBundle = {};
-  bobPrekeysBundle[IDENTITY_KEY] = getIdentityKey();
-  bobPrekeysBundle[SIGNED_PREKEY] = generateKeyPair();
-  bobPrekeysBundle[SIGNATURE] = calculateSignature(
-                                  bobPrekeysBundle[IDENTITY_KEY][PRIVATE_KEY],
-                                  bobPrekeysBundle[SIGNED_PREKEY][PUBLIC_KEY]
+  let bobPrekeyBundle = {};
+  bobPrekeyBundle[IDENTITY_KEY] = getIdentityKey();
+  bobPrekeyBundle[SIGNED_PREKEY] = generateKeyPair();
+  bobPrekeyBundle[SIGNATURE] = calculateSignature(
+                                  bobPrekeyBundle[IDENTITY_KEY][PRIVATE_KEY],
+                                  bobPrekeyBundle[SIGNED_PREKEY][PUBLIC_KEY]
                                 );
-  bobPrekeysBundle[ONETIME_PREKEYS] = [];
+  bobPrekeyBundle[ONETIME_PREKEYS] = [];
   for (let i = 0; i < SystemConstant.NO_ONETIME_PREKEYS; ++i) 
-    bobPrekeysBundle[ONETIME_PREKEYS].push(generateKeyPair());
-  return bobPrekeysBundle;
+    bobPrekeyBundle[ONETIME_PREKEYS].push(generateKeyPair());
+  return bobPrekeyBundle;
 }
 
 const verifyBobPrekeyBundle = (bobPrekeyBundle) => {

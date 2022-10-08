@@ -174,6 +174,10 @@ const findOneAndRemove = (dbFilepath, constraints) => {
   return item._data;
 };
 
+const dropAll = (dbFilepath) => {
+  jsonfile.writeFileSync(dbFilepath, []);
+}
+
 const generate = (model, dbName) => {
   // Set database filepath
   var dbFilepath = StringFormat(TxtConstant.FM_DB_PATH, AppConstant.DB_FOLDERPATH, dbName);
@@ -191,6 +195,7 @@ const generate = (model, dbName) => {
     findOne: (constraints) => findOne(dbFilepath, constraints),
     findOneWithId: (constraints) => findOneWithId(dbFilepath, constraints),
     findAll: (constraints) => findAll(dbFilepath, constraints),
+    dropAll: () => dropAll(dbFilepath),
     findOneById: (id) => findOneById(dbFilepath, id),
     findOneByIdAndRemove: (id) => findOneByIdAndRemove(dbFilepath, id),
     findOneAndRemove: (constrants) => findOneAndRemove(dbFilepath, constrants),

@@ -1,6 +1,6 @@
 import { TestApi } from "api";
 
-async function fetchTest() {
+export async function fetchTest() {
   var response = await TestApi.testGet();
   if (response.ok) {
     return response.data;
@@ -9,7 +9,7 @@ async function fetchTest() {
   }
 };
 
-async function postTest(data) {
+export async function postTest(data) {
   var response = await TestApi.testPost(data);
   if (response.ok) {
     return response.data;
@@ -18,7 +18,7 @@ async function postTest(data) {
   }
 };
 
-async function getAuthorTest() {
+export async function getAuthorTest() {
   var response = await TestApi.testAuthorizationGet();
   if (response.ok) {
     return response.data;
@@ -27,18 +27,11 @@ async function getAuthorTest() {
   }
 };
 
-async function postAuthorTest(data) {
+export async function postAuthorTest(data) {
   var response = await TestApi.testAuthorizationPost(data);
   if (response.ok) {
     return response.data;
   } else {
     throw response.problem;
   }
-};
-
-export {
-  fetchTest,
-  postTest,
-  getAuthorTest,
-  postAuthorTest,
 };
