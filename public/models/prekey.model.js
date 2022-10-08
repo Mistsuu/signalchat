@@ -1,13 +1,11 @@
-const { object, string, array } = require("yup");
+const { object, string, number } = require("yup");
+const { SystemConstant } = require("../const");
 const BaseModel = require('./base.model');
 
 const prekeySchema = object({
-  userID: string().required(),
-  deviceID: string().required(),
-  identityKey: string().required(),
-  signedPrekey: string().required(),
-  onetimePrekeys: array().of(object({ keyID: string().required(), key: string().required() })).default([]),
+  keyType: number().required().oneOf(Object.values(SystemConstant.KEY_TYPE)),
+  key: string().required(),
+  signature: string().default(""),
 });
 
-const prekeyModel = BaseModel.generate(prekeySchema, "prekey");
-module.exports = prekeyModel;
+module.exports = BaseModel.generate(prekeySchema, "prekey");
