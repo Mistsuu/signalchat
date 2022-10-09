@@ -1,6 +1,7 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo } from "react";
 import { Navigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import HomeBox from "./HomeBox";
 import { getLocalStorage, setLocalStorage } from "utils/storage.util";
 import { useOnceCall } from "utils/fixreact.util";
 import { PathConstant, StorageConstant } from "const";
@@ -16,23 +17,16 @@ const HomePage = () => {
   //////////////////////////  MUTATIONS  //////////////////////////
 
   const uploadKeyMutation = useMutation(KeyAction.initKeys, {
-    onMutate: (variables) => {
-    },
     onError: (error, variables, context) => {
       // TODO: Set data so that the notification badge display on screen.
       alert(error);
     },
     onSuccess: (data, variables, context) => {
-      if (data.success) {
-        
-      } 
-      else {
+      if (!data.success) {
         // TODO: Set data so that the notification badge display on screen.
         alert(data.error);
       }
     },
-    onSettled: () => {
-    }
   });
 
   //////////////////////////////////////////////////////////////
@@ -44,7 +38,7 @@ const HomePage = () => {
 
   return (
     <>
-      <h1>Home Page</h1>
+      <HomeBox/>
     </>
   )
 }

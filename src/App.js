@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CssBaseline } from '@mui/material';
-import { LoginPage, HomePage, RegisterPage, ChatPage } from 'pages';
+import { LoginPage, HomePage, RegisterPage } from 'pages';
 import { MainWindow, TitleBar } from 'components';
 import { PathConstant } from 'const';
 
@@ -15,7 +15,6 @@ const App = () => {
       <MainWindow>
         <TitleBar/>
         <CssBaseline/>
-        {/* <ChatPage/> */}
         <HashRouter>
           <Routes>
             <Route path={PathConstant.PATH_HOME} element={<HomePage/>}/>

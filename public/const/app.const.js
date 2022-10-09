@@ -1,4 +1,4 @@
-const APP_NAME_STR = "signalChat";
+const APP_NAME_STR = "";
 const DB_FOLDERPATH = "jsondb";
 
 module.exports = {
