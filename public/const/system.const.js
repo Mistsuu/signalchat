@@ -9,10 +9,24 @@ const KEY_TYPE = {
   onetimePrekey: 2,
 }
 
+const DEVICE_STATE = {
+  stale: 0,
+  active: 1,
+};
+
+const SESSION_STATE = {
+  inactive: 0,
+  active: 1,
+}
+
 const NO_ONETIME_PREKEYS = 100;
+const MAX_INTERVAL = 3600;
 
 module.exports = {
   CHAT_SIDE_TYPE,
   NO_ONETIME_PREKEYS,
   KEY_TYPE,
+  DEVICE_STATE,
+  SESSION_STATE,
+  MAX_INTERVAL,
 }

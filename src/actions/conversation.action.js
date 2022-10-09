@@ -1,4 +1,4 @@
-import { object, string, boolean, array } from "yup";
+import { object, string, boolean, array, number } from "yup";
 import { ConversationApi } from "api";
 import { TxtConstant } from "const";
 
@@ -11,9 +11,15 @@ export async function sendMessage(data)
   })
   data = dataSchema.validateSync(data);
 
-  // Fetch the other's devices from server.
+  // Schema for publishing message to server.
+  const requestSchema = array().of(
+    object({
+      type: number().required(),    // Type of message: initiate / normal
+      receipientDeviceID: string().required(),
+      message: string().required(),
+      timestamp: number().default(Date.now())
+    })
+  );
 
-  // Fetch the devices linked to our device from server.
-
-  // Compares with the devices we have.
+  // 
 }
