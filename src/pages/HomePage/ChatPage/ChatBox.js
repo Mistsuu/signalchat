@@ -55,7 +55,7 @@ export default memo(ChatBox);
 
 const useStyles = makeStyles(theme => ({
   messageWindow: {
-    height: "calc(100% - 50vw)",
+    height: "calc(100% - 190px)",
     margin: 20,
     marginTop: 5,
     borderRadius: 15,
