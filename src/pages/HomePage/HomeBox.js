@@ -4,7 +4,7 @@ import ChatPage from "./ChatPage";
 import BackBtn from "./BackBtn";
 
 const HomeBox = () => {
-  const [userID, setUserID] = useState("vietanh");
+  const [userID, setUserID] = useState("vietanh1");
 
   return (
     <>

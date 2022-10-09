@@ -1,48 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
 import HomeBox from "./HomeBox";
-import { getLocalStorage, rmLocalStorage } from "utils/storage.util";
-import { useOnceCall } from "utils/fixreact.util";
+import { getLocalStorage } from "utils/storage.util";
 import { PathConstant, StorageConstant } from "const";
-import { KeyAction } from "actions";
 
 const HomePage = () => {
-  useOnceCall(() => {
-    if (getLocalStorage(StorageConstant.AUTH_TOKEN)) {
-      uploadKeyMutation.mutate();
-    }
-  })
-
-  //////////////////////////  MUTATIONS  //////////////////////////
-
-  const uploadKeyMutation = useMutation(KeyAction.initKeys, {
-    onError: (error, variables, context) => {
-      // TODO: Set data so that the notification badge display on screen.
-      alert(error);
-      // Remove storage
-      rmLocalStorage(StorageConstant.AUTH_TOKEN);
-      rmLocalStorage(StorageConstant.DEVICE_ID);
-      rmLocalStorage(StorageConstant.USER_ID);
-      // Redirect to login page
-      window.location.href = PathConstant.PATH_LOGIN;
-    },
-    onSuccess: (data, variables, context) => {
-      if (!data.success) {
-        // TODO: Set data so that the notification badge display on screen.
-        alert(data.error);
-        // Remove storage
-        rmLocalStorage(StorageConstant.AUTH_TOKEN);
-        rmLocalStorage(StorageConstant.DEVICE_ID);
-        rmLocalStorage(StorageConstant.USER_ID);
-        // Redirect to login page
-        window.location.href = PathConstant.PATH_LOGIN;
-      }
-    },
-  });
-
-  //////////////////////////////////////////////////////////////
-
   // Redirect to login page if user is not logged in yet!
   if (!getLocalStorage(StorageConstant.AUTH_TOKEN)) {
     return <Navigate to={PathConstant.PATH_LOGIN}/>
