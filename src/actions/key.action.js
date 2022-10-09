@@ -131,3 +131,40 @@ export async function initKeys() {
     error: error,
   });
 }
+
+export async function checkAndUploadKey() {
+  // Create schemas
+  let responseSchema = object({
+    success: boolean().required(),
+    error: string().default(""),
+  })
+
+  // Get API call
+  var response = await KeyApi.checkKeyStatus();
+  var success = false;
+  var error = "";
+
+  if (response.ok) {
+    try {
+      // Validate input
+      var data = responseSchema.validateSync(response.data);
+
+      // Check if key exists, if not upload now!
+      if (!data.success)
+        return responseSchema.cast(await initKeys());
+      else 
+        return data;
+
+    } catch (err) {
+      error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
+    }
+  } else {
+    error = StringFormat(TxtConstant.FM_REQUEST_ERROR, response.problem);
+  }
+
+  // Return data to view.
+  return responseSchema.cast({
+    success: success,
+    error: error,
+  });
+}

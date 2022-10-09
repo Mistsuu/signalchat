@@ -5,25 +5,25 @@ import { Box } from "@mui/material";
 import { Button } from "components";
 import { fontWeight } from "@mui/system";
 
-const BackBtn = ({ onClick, ...otherProps }) => {
+const ExitBtn = ({ onClick, ...otherProps }) => {
   const classes = useStyles();
 
   return (
-    <Button width={70} className={classes.backBtn} onClick={onClick}>
+    <Button width={100} className={classes.backBtn} onClick={onClick}>
       <Box>
-        Back
+        Logout
       </Box>
     </Button>
   )
 }
 
-BackBtn.propTypes = {
+ExitBtn.propTypes = {
   onClick: PropTypes.func,
 }
 
-BackBtn.defaultProps = {}
+ExitBtn.defaultProps = {}
 
-export default memo(BackBtn);
+export default memo(ExitBtn);
 
 const useStyles = makeStyles(theme => ({
   backBtn: {

@@ -20,6 +20,7 @@ const API_LOGIN = "/login";
 const API_REGISTER = "/register";
 const API_INITKEY = "/initkey";
 const API_UPDATEONETIME = "/updateOneTime";
+const API_CHECKKEYSTATUS = "/checkKeyStatus";
 
 module.exports = {
   // Common
@@ -40,4 +41,5 @@ module.exports = {
   API_REGISTER,
   API_INITKEY,
   API_UPDATEONETIME,
+  API_CHECKKEYSTATUS,
 };

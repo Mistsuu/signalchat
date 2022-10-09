@@ -2,6 +2,7 @@ import StringFormat from "string-format";
 import { object, string, boolean, array } from "yup";
 import { AuthApi } from "api";
 import { TxtConstant } from "const";
+import { PrekeyModel } from "models";
 
 export async function authLogin(data) {
   // Create schemas
@@ -77,3 +78,8 @@ export async function authRegister(data) {
     error: error,
   });
 };
+
+export async function authLogout() {
+  // Clear database files
+  PrekeyModel.dropAll();
+}

@@ -25,8 +25,8 @@ const LoginPage = () => {
         setLocalStorage(StorageConstant.AUTH_TOKEN, data.token);
         setLocalStorage(StorageConstant.DEVICE_ID, data.deviceID);
         setLocalStorage(StorageConstant.USER_ID, data.userID);
-        // Upload key.
-        uploadKeyMutation.mutate();
+        // Redirect to /
+        window.location.href = ApiConstant.PATH_HOME;
       } 
       else {
         // TODO: Set data so that the notification badge display on screen.
@@ -36,30 +36,6 @@ const LoginPage = () => {
     onSettled: () => {
       setIsLogginIn(false);
     }
-  });
-
-  const uploadKeyMutation = useMutation(KeyAction.initKeys, {
-    onError: (error, variables, context) => {
-      // TODO: Set data so that the notification badge display on screen.
-      alert(error);
-      // Remove storage
-      rmLocalStorage(StorageConstant.AUTH_TOKEN);
-      rmLocalStorage(StorageConstant.DEVICE_ID);
-      rmLocalStorage(StorageConstant.USER_ID);
-    },
-    onSuccess: (data, variables, context) => {
-      if (!data.success) {
-        // TODO: Set data so that the notification badge display on screen.
-        alert(data.error);
-        // Remove storage
-        rmLocalStorage(StorageConstant.AUTH_TOKEN);
-        rmLocalStorage(StorageConstant.DEVICE_ID);
-        rmLocalStorage(StorageConstant.USER_ID);
-      } else {
-        // Redirect to /
-        window.location.href = ApiConstant.PATH_HOME;
-      }
-    },
   });
 
   //////////////////////////////////////////////////////////////
