@@ -19,7 +19,7 @@ export async function authLogin(data) {
   })
 
   // Send data
-  var request = await requestSchema.validate(data);
+  var request = requestSchema.validateSync(data);
   var response = await AuthApi.login(request);
 
   // Check output
@@ -27,7 +27,7 @@ export async function authLogin(data) {
   var error = "";
   if (response.ok) {
     try {
-      var data = await responseSchema.validate(response.data);
+      var data = responseSchema.validateSync(response.data);
       return data;
     } catch (err) {
       error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
@@ -55,7 +55,7 @@ export async function authRegister(data) {
   });
 
   // Send data
-  var request = await requestSchema.validate(data);
+  var request = requestSchema.validateSync(data);
   var response = await AuthApi.register(request);
 
   // Check output
@@ -63,7 +63,7 @@ export async function authRegister(data) {
   var error = "";
   if (response.ok) {
     try {
-      var data = await responseSchema.validate(response.data);
+      var data = responseSchema.validateSync(response.data);
       return data;
     } catch (err) {
       error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);

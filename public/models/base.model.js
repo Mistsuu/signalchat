@@ -68,8 +68,8 @@ const findAllInDBArray = (array, constraints) => {
   return indices;
 }
 
-const create = async (model, dbFilepath, obj) => {
-  const parsedObj = await model.validate({
+const create = (model, dbFilepath, obj) => {
+  const parsedObj = model.validateSync({
     _id: crypto.randomBytes(16).toString("hex"),
     _data: obj
   });
@@ -135,7 +135,7 @@ const findOneByIdAndRemove = (dbFilepath, id) => {
   return null;
 }
 
-const findOneAndUpdate = async (model, dbFilepath, constraints, setValues) => {
+const findOneAndUpdate = (model, dbFilepath, constraints, setValues) => {
   if (!(setValues instanceof Object))
     return null;
 
@@ -152,7 +152,7 @@ const findOneAndUpdate = async (model, dbFilepath, constraints, setValues) => {
   }
 
   // Parse item before sending data off.
-  var parsedItem = await model.validate(item);
+  var parsedItem = model.validateSync(item);
   jsonData[index] = parsedItem;
 
   // Write data & return new object.

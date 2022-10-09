@@ -40,4 +40,7 @@ contextBridge.exposeInMainWorld("SignalInteractor", {
 
 contextBridge.exposeInMainWorld("SignalModel", {
   Prekey: require("./models/prekey.model"),
+  Session: require("./models/session.model"),
+  Message: require("./models/message.model"),
+  Device: require("./models/device.model"),
 })

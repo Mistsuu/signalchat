@@ -6,19 +6,19 @@ import { TxtConstant, SystemConstant } from "const";
 import { bufferToHex } from "utils/buffer.util";
 import { PrekeyModel } from "models";
 
-async function writePreKeyBundleToDB(prekeyBundle) {
+function writePreKeyBundleToDB(prekeyBundle) {
   // Clear database file
   PrekeyModel.dropAll();
 
   // Write identity key
-  await PrekeyModel.create({
+  PrekeyModel.create({
     keyType: SystemConstant.KEY_TYPE.identity,
     publicKey: bufferToHex(prekeyBundle.identityKey.publicKey),
     privateKey: bufferToHex(prekeyBundle.identityKey.privateKey)
   })
 
   // Write signed prekey
-  await PrekeyModel.create({
+  PrekeyModel.create({
     keyType: SystemConstant.KEY_TYPE.signedPrekey,
     publicKey: bufferToHex(prekeyBundle.signedPreKey.publicKey),
     privateKey: bufferToHex(prekeyBundle.signedPreKey.privateKey),
@@ -27,7 +27,7 @@ async function writePreKeyBundleToDB(prekeyBundle) {
   
   // Write one time prekeys
   for (var onetimePrekey of prekeyBundle.oneTimePreKeys)
-    await PrekeyModel.create({
+    PrekeyModel.create({
       keyType: SystemConstant.KEY_TYPE.onetimePrekey,
       publicKey: bufferToHex(onetimePrekey.publicKey),
       privateKey: bufferToHex(onetimePrekey.privateKey),
@@ -52,7 +52,7 @@ function fetchKeysFromDB() {
 
   // Set onetime prekeys.
   const onetimePrekeyRecords = PrekeyModel.findAll({keyType: SystemConstant.KEY_TYPE.onetimePrekey});
-  if (!onetimePrekeyRecords)
+  if (onetimePrekeyRecords === [])
     return null;
   prekeyBundle.onetimePrekeys = onetimePrekeyRecords.map(record => record.publicKey);
 
@@ -79,14 +79,14 @@ export async function initKeys() {
   var request = null;
   if (isGenerateNewKeys) {
     prekeyBundle = CryptoInteractor.generateBobPrekeyBundle();
-    request = await requestSchema.validate({
+    request = requestSchema.cast({
       identityKey: bufferToHex(prekeyBundle.identityKey.publicKey),
       signedPrekey: bufferToHex(prekeyBundle.signedPreKey.publicKey),
       signature: bufferToHex(prekeyBundle.signature),
       onetimePrekeys: prekeyBundle.oneTimePreKeys.map(onetimePrekey => bufferToHex(onetimePrekey.publicKey)),
     });
   } else {
-    request = await requestSchema.validate({
+    request = requestSchema.cast({
       identityKey: prekeyBundle.identityKey,
       signedPrekey: prekeyBundle.signedPrekey,
       signature: prekeyBundle.signature,
@@ -108,12 +108,12 @@ export async function initKeys() {
   if (response.ok) {
     try {
       // Validate input
-      data = await responseSchema.validate(response.data);
+      data = responseSchema.validateSync(response.data);
       
       // Write keys to database if upload is successful!
       try {
         if (data.success && isGenerateNewKeys)
-          await writePreKeyBundleToDB(prekeyBundle);
+          writePreKeyBundleToDB(prekeyBundle);
         return data;
       } catch (err) {
         error = StringFormat(TxtConstant.FM_DATABASE_ERROR, err);

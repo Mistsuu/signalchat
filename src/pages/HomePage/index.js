@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { Navigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import HomeBox from "./HomeBox";
-import { getLocalStorage, setLocalStorage } from "utils/storage.util";
+import { getLocalStorage, rmLocalStorage } from "utils/storage.util";
 import { useOnceCall } from "utils/fixreact.util";
 import { PathConstant, StorageConstant } from "const";
 import { KeyAction } from "actions";
@@ -20,11 +20,23 @@ const HomePage = () => {
     onError: (error, variables, context) => {
       // TODO: Set data so that the notification badge display on screen.
       alert(error);
+      // Remove storage
+      rmLocalStorage(StorageConstant.AUTH_TOKEN);
+      rmLocalStorage(StorageConstant.DEVICE_ID);
+      rmLocalStorage(StorageConstant.USER_ID);
+      // Redirect to login page
+      window.location.href = PathConstant.PATH_LOGIN;
     },
     onSuccess: (data, variables, context) => {
       if (!data.success) {
         // TODO: Set data so that the notification badge display on screen.
         alert(data.error);
+        // Remove storage
+        rmLocalStorage(StorageConstant.AUTH_TOKEN);
+        rmLocalStorage(StorageConstant.DEVICE_ID);
+        rmLocalStorage(StorageConstant.USER_ID);
+        // Redirect to login page
+        window.location.href = PathConstant.PATH_LOGIN;
       }
     },
   });

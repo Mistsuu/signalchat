@@ -41,6 +41,7 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: "#cacbcc",
       transform: "translateY(2px)",
       boxShadow: "none"
-    }
+    },
+    color: "#808080"
   }
 }));

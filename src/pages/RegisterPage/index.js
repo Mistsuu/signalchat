@@ -11,27 +11,27 @@ const RegisterPage = () => {
   
   // Create mutation
   const mutation = useMutation(AuthAction.authRegister, {
-                                onMutate: (variables) => {
-                                  setIsRegistering(true);
-                                },
-                                onError: (error, variables, context) => {
-                                  // TODO: Set data so that the notification badge display on screen.
-                                  alert(error);
-                                },
-                                onSuccess: (data, variables, context) => {
-                                  if (data.success) {
-                                    // TODO: Set data so that the notification badge display on screen.
-                                    // alert(TxtConstant.TXT_SUCCESSFULLY_REGISTER);
-                                    window.location.href = PathConstant.PATH_LOGIN;
-                                  } else {
-                                    // TODO: Set data so that the notification badge display on screen.
-                                    alert(data.error);
-                                  }
-                                },
-                                onSettled: () => {
-                                  setIsRegistering(false);
-                                }
-                              });
+    onMutate: (variables) => {
+      setIsRegistering(true);
+    },
+    onError: (error, variables, context) => {
+      // TODO: Set data so that the notification badge display on screen.
+      alert(error);
+    },
+    onSuccess: (data, variables, context) => {
+      if (data.success) {
+        // TODO: Set data so that the notification badge display on screen.
+        // alert(TxtConstant.TXT_SUCCESSFULLY_REGISTER);
+        window.location.href = PathConstant.PATH_LOGIN;
+      } else {
+        // TODO: Set data so that the notification badge display on screen.
+        alert(data.error);
+      }
+    },
+    onSettled: () => {
+      setIsRegistering(false);
+    }
+  });
 
 
   // Redirect to home page if user is logged in!

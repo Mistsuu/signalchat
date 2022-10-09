@@ -4,7 +4,7 @@ export const bufferToHex = (buffer) => {
     .join('');
 }
 
-export const getApproxString = (inputStr, trimLen=20) => {
+export const getApproxString = (inputStr, trimLen=15) => {
   if (inputStr.length <= trimLen)
     return inputStr
   return inputStr.substring(0, trimLen) + "...";

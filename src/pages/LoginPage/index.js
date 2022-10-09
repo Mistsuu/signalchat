@@ -23,6 +23,8 @@ const LoginPage = () => {
       if (data.success) {
         // Set storage
         setLocalStorage(StorageConstant.AUTH_TOKEN, data.token);
+        setLocalStorage(StorageConstant.DEVICE_ID, data.deviceID);
+        setLocalStorage(StorageConstant.USER_ID, data.userID);
         // Redirect to /
         window.location.href = ApiConstant.PATH_HOME;
       } 

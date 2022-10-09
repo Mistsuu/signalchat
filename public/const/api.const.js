@@ -3,7 +3,7 @@ const BASE_URL = "http://172.16.88.158:1208";
 const HEADER_DEFAULT = {
   Accept: "application/json",
 };
-const TIMEOUT = 5000;
+const TIMEOUT = 30000;
 
 // HTTP Status
 const STT_OK = 200;
