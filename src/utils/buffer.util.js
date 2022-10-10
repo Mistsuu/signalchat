@@ -6,6 +6,15 @@ export const bufferToHex = (buffer) =>
 export const hexToBuffer = (hexString) => 
   Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
 
+export const randomBuffer = (nbytes) => {
+  var randomBuf = new Uint8Array(nbytes);
+  crypto.getRandomValues(randomBuf);
+  return randomBuf;
+}
+
+export const randomBufferHex = (nbytes) =>
+  bufferToHex(randomBuffer(nbytes))
+
 export const getApproxString = (inputStr, trimLen=15) => {
   if (inputStr.length <= trimLen)
     return inputStr

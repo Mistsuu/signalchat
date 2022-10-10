@@ -16,7 +16,6 @@ export const parseResponse = (responseSchema, response) => {
   var returnSchema = object({
     error: string().default(""),
     responseData: mixed(),
-    isServerResponse: boolean().required(),
   });
 
   if (response.problem === ApiConstant.PROB_NONE) {
@@ -26,10 +25,15 @@ export const parseResponse = (responseSchema, response) => {
       error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
     }
   } else if (response.problem === ApiConstant.PROB_CLIENT_ERROR) {
-    if (response.hasOwnProperty("data") && response.data.hasOwnProperty("error"))
-      error = response.data.error ? response.data.error : TxtConstant.ERR_UNKNOWN_ERROR_FROM_CLIENT;
-    else 
-      error = TxtConstant.ERR_UNKNOWN_ERROR_FROM_CLIENT;
+    try {
+      responseData = responseSchema.validateSync(response.data)
+      if (response.hasOwnProperty("data") && response.data.hasOwnProperty("error"))
+        error = response.data.error ? response.data.error : TxtConstant.ERR_UNKNOWN_ERROR_FROM_CLIENT;
+      else 
+        error = TxtConstant.ERR_UNKNOWN_ERROR_FROM_CLIENT;
+    } catch (err) {
+      error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
+    }
   } else if (response.problem === ApiConstant.PROB_SERVER_ERROR) {
     if (response.hasOwnProperty("data") && response.data.hasOwnProperty("error"))
       error = response.data.error ? response.data.error : TxtConstant.ERR_UNKNOWN_ERROR_FROM_SERVER;
@@ -50,6 +54,5 @@ export const parseResponse = (responseSchema, response) => {
   return returnSchema.cast({
     error: error,
     responseData: responseData,
-    isServerResponse: response.hasOwnProperty("status")
   })
 }

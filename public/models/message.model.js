@@ -5,7 +5,7 @@ const BaseModel = require('./base.model');
 const messageSchema = object({
   userID: string().required(),
   message: string().required(),
-  timestamp: number().default(Date.now()),
+  timestamp: number().required(),
   side: number().required().oneOf(Object.values(SystemConstant.CHAT_SIDE_TYPE)),
 });
 

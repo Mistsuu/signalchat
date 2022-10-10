@@ -25,7 +25,6 @@ export async function authLogin(data) {
   var {
     error, 
     responseData,
-    isServerResponse
   } = parseResponse(responseSchema, response);
 
   return {
@@ -55,7 +54,6 @@ export async function authRegister(data) {
   var {
     error, 
     responseData,
-    isServerResponse
   } = parseResponse(responseSchema, response);
 
   return {

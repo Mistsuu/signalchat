@@ -1,10 +1,12 @@
 import { object, string, boolean, array, number } from "yup";
+import StringFormat from "string-format";
 import { ConversationApi } from "api";
 import { bufferToHex, hexToBuffer } from "utils/buffer.util";
-import { TxtConstant, SystemConstant, StorageConstant, NativeConstant } from "const";
-import { DeviceModel, SessionModel } from "models";
+import { SystemConstant, StorageConstant, TxtConstant, NativeConstant, ApiConstant } from "const";
+import { DeviceModel, MessageModel, SessionModel } from "models";
 import { CryptoInteractor } from "interactor";
 import { getLocalStorage } from "utils/storage.util";
+import { parseResponse } from "utils/api.util";
 
 function unHexifyRachetStateObj(obj)
 {
@@ -32,16 +34,16 @@ function hexifyRachetStateObj(obj)
   }
 }
 
-function encryptMessageInStoredSessions(userID, message)
+function encryptMessageInStoredSessions(userID, message, messageID)
 {
-  var ciphertextObjs = [];
+  var messageObjs = [];
   var deviceRecords = DeviceModel.findAll({
     userID: userID
   });
 
   for (var deviceRecord of deviceRecords) {
     if (deviceRecord.state === SystemConstant.DEVICE_STATE.active) {
-      var sessionRecord = SessionModel.findOne({
+      var { _id:sessionID, _data:sessionRecord } = SessionModel.findOneWithId({
         userID: userID,
         deviceID: deviceRecord.deviceID,
         state: SystemConstant.SESSION_STATE.active
@@ -64,29 +66,52 @@ function encryptMessageInStoredSessions(userID, message)
         // Check if encrypt successful, then write new rachet state to database.
         if (ciphertext.length === 0)
           continue;
+
+        // Write new rachet state to database.
         hexifyRachetStateObj(nxtRachetState);
-  
-        SessionModel.findOneAndUpdate({
-          userID: userID,
-          deviceID: deviceRecord.deviceID,
-          sessionID: deviceRecord.sessionID,
-        }, 
-        {
-          rachetState: nxtRachetState
-        });
+        SessionModel.findOneByIdAndUpdate(sessionID, { rachetState: nxtRachetState });
 
         // Push successful ciphertext into array.
-        ciphertextObjs.push({
+        messageObjs.push({
           type: SystemConstant.MESSAGE_TYPE.normal,
+          header: bufferToHex(CryptoInteractor.serializeRachetHeader(rachetHeader)),
+          message: bufferToHex(ciphertext),
+          messageID: messageID,
           receipientDeviceID: deviceRecord.deviceID,
-          ciphertext: bufferToHex(ciphertext),
-          header: bufferToHex(CryptoInteractor.serializeRachetHeader(rachetHeader))
         });
       }
     }
   }
 
-  return ciphertextObjs;
+  return messageObjs;
+}
+
+function markDevicesAsStale(userID, deviceIDs)
+{
+  var error = "";
+
+  try {
+    for (var deviceID of deviceIDs) {
+      DeviceModel.findOneAndUpdate({
+        userID: userID,
+        deviceID: deviceID
+      }, { state: SystemConstant.DEVICE_STATE.stale });
+    }
+  } catch (err) {
+    error = StringFormat(TxtConstant.FM_DATABASE_ERROR, error);
+  }
+
+  return {
+    error: error
+  }
+}
+
+function sendMessageForNewDevices(userID, deviceIDs, message, messageID)
+{
+  console.log(deviceIDs)
+  return {
+    error: ""
+  }
 }
 
 export async function sendMessage(data) 
@@ -102,48 +127,90 @@ export async function sendMessage(data)
   const requestSchema = array().of(
     object({
       type: number().required().oneOf(Object.values(SystemConstant.MESSAGE_TYPE)),    // Type of message: initiate / normal
-      receipientDeviceID: string().required(),
-      message: string().required(),
       header: string().required(),
-      timestamp: number().default(Date.now())
+      message: string().required(),
+      messageID: string().required(),
+      timestamp: number().default(Date.now()),
+      receipientDeviceID: string().required(),
     })
   );
 
   const responseSchema = object({
-    success: boolean().required(),
     oldDeviceIDs: array().of(string()).default([]),
     newDeviceIDs: array().of(string()).default([]),
     error: string().default(""),
   });
-
-  const returnSchema = object({
-    success: boolean().required(),
-    error: string().default(""),
-  })
+  
+  // --------------------- Push message to the database ---------------------.
+  var { _id:messageID, _data:newMessageRecord } = MessageModel.create({
+                                                    userID: data.receipientUserID,
+                                                    message: data.message,
+                                                    side: SystemConstant.CHAT_SIDE_TYPE.our,
+                                                    timestamp: Date.now()
+                                                  });
+  
 
   // --------------------- Request send to the UserID's mailbox ---------------------.
   var requestOther = requestSchema.cast(
     encryptMessageInStoredSessions(
       data.receipientUserID,
-      data.message
+      data.message,
+      messageID,
     )
   );
 
   var responseOther = await ConversationApi.sendMessage(data.receipientUserID, requestOther);
-  if (responseOther.problem) {
-    return returnSchema.cast({
-      success: false,
-      error: responseOther.problem
-    })
+  var {
+    error,
+    responseData,
+  } = parseResponse(responseSchema, responseOther);
+
+  // Add/remove new/old devices added to the server.
+  if (error) {
+    if (responseOther.status && responseData && responseOther.status === ApiConstant.STT_CONFLICT) {
+      var {error} = markDevicesAsStale(data.receipientUserID, responseData.oldDeviceIDs);
+      if (error)
+        return {
+          error: error
+        }
+
+      var {error} = sendMessageForNewDevices(data.receipientUserID, responseData.newDeviceIDs, data.message, messageID);
+      if (error) 
+        return {
+          error: error
+        }
+    } 
+    else 
+      return {
+        error: error
+      }
   }
 
   // --------------------- Request send to the our other devices' mailbox ---------------------.
-  var requestMe = requestSchema.cast(
-    encryptMessageInStoredSessions(
-      getLocalStorage(StorageConstant.USER_ID),
-      data.message
-    )
-  );
+  // var requestMe = requestSchema.cast(
+  //   encryptMessageInStoredSessions(
+  //     getLocalStorage(StorageConstant.USER_ID),
+  //     data.message,
+  //     messageID,
+  //   )
+  // );
 
-  var responseMe = await ConversationApi.sendMessage(getLocalStorage(StorageConstant.USER_ID), requestMe);
+  // var responseMe = await ConversationApi.sendMessage(getLocalStorage(StorageConstant.USER_ID), requestMe);
+  // var {
+  //   error,
+  //   responseData,
+  // } = parseResponse(responseSchema, responseMe);
+
+  // // Add/remove new/old devices added to the server.
+  // if (error) {
+  //   if (responseOther.status && responseOther.status === ApiConstant.STT_CONFLICT) {
+  //     markDevicesAsStale(responseData.oldDeviceIDs);
+  //     encryptMessageForNewDevices(responseData.newDeviceIDs);
+  //   } else {
+  //     return {
+  //       error: error
+  //     }
+  //   }
+  // }
+
 }

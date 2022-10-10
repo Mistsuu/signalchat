@@ -25,6 +25,7 @@ const API_INITKEY = "/initkey";
 const API_UPDATEONETIME = "/updateOneTime";
 const API_CHECKKEYSTATUS = "/checkKeyStatus";
 const API_SEND = "/send/{0}";
+const API_GETKEY = "/getkey/{0}";
 
 // Problems (throw by APISauce)
 const PROB_NONE = null;
@@ -59,6 +60,7 @@ module.exports = {
   API_UPDATEONETIME,
   API_CHECKKEYSTATUS,
   API_SEND,
+  API_GETKEY,
   // Problems
   PROB_NONE,
   PROB_CLIENT_ERROR,

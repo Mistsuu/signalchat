@@ -135,6 +135,26 @@ const findOneByIdAndRemove = (dbFilepath, id) => {
   return null;
 }
 
+const findOneByIdAndUpdate = (model, dbFilepath, id, setValues) => {
+  var jsonData = getJSONData(dbFilepath);
+  for (var index in jsonData) {
+    if (jsonData[index]._id === id) {
+      // Get keys
+      var item = jsonData[index];
+      for (var key of Object.keys(setValues)) {
+        item._data[key] = setValues[key];
+      }
+
+      // Parse item before sending data off.
+      var parsedItem = model.validateSync(item);
+      jsonData[index] = parsedItem;
+
+      return parsedItem._data;
+    }
+  }
+  return null;
+}
+
 const findOneAndUpdate = (model, dbFilepath, constraints, setValues) => {
   if (!(setValues instanceof Object))
     return null;
@@ -198,6 +218,7 @@ const generate = (model, dbName) => {
     dropAll: () => dropAll(dbFilepath),
     findOneById: (id) => findOneById(dbFilepath, id),
     findOneByIdAndRemove: (id) => findOneByIdAndRemove(dbFilepath, id),
+    findOneByIdAndUpdate: (id, setValues) => findOneByIdAndUpdate(model, dbFilepath, id, setValues),
     findOneAndRemove: (constrants) => findOneAndRemove(dbFilepath, constrants),
     findOneAndUpdate: (constraints, setValues) => findOneAndUpdate(model, dbFilepath, constraints, setValues),
   }
