@@ -11,6 +11,9 @@ const STT_BAD_REQUEST = 400;
 const STT_UNAUTHORIZED = 401;
 const STT_FORBIDDEN = 403;
 const STT_NOT_FOUND = 404;
+const STT_NOT_ACCEPTABLE = 406;
+const STT_CONFLICT = 409;
+const STT_GONE = 410;
 const STT_INTERNAL_SERVER = 500;
 
 // API
@@ -21,6 +24,16 @@ const API_REGISTER = "/register";
 const API_INITKEY = "/initkey";
 const API_UPDATEONETIME = "/updateOneTime";
 const API_CHECKKEYSTATUS = "/checkKeyStatus";
+const API_SEND = "/send/{0}";
+
+// Problems (throw by APISauce)
+const PROB_NONE = null;
+const PROB_CLIENT_ERROR = "CLIENT_ERROR";
+const PROB_SERVER_ERROR = "SERVER_ERROR";
+const PROB_TIMEOUT_ERROR = "TIMEOUT_ERROR";
+const PROB_CONNECTION_ERROR = "CONNECTION_ERROR";
+const PROB_NETWORK_ERROR = "NETWORK_ERROR";
+const PROB_CANCEL_ERROR = "CANCEL_ERROR";
 
 module.exports = {
   // Common
@@ -34,6 +47,9 @@ module.exports = {
   STT_FORBIDDEN,
   STT_NOT_FOUND,
   STT_INTERNAL_SERVER,
+  STT_CONFLICT,
+  STT_GONE,
+  STT_NOT_ACCEPTABLE,
   // API
   API_TEST,
   API_TESTAUTH,
@@ -42,4 +58,13 @@ module.exports = {
   API_INITKEY,
   API_UPDATEONETIME,
   API_CHECKKEYSTATUS,
+  API_SEND,
+  // Problems
+  PROB_NONE,
+  PROB_CLIENT_ERROR,
+  PROB_SERVER_ERROR,
+  PROB_TIMEOUT_ERROR,
+  PROB_CONNECTION_ERROR,
+  PROB_NETWORK_ERROR,
+  PROB_CANCEL_ERROR,
 };

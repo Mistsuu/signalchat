@@ -20,7 +20,7 @@ const LoginPage = () => {
       alert(error);
     },
     onSuccess: (data, variables, context) => {
-      if (data.success) {
+      if (!data.error) {
         // Set storage
         setLocalStorage(StorageConstant.AUTH_TOKEN, data.token);
         setLocalStorage(StorageConstant.DEVICE_ID, data.deviceID);

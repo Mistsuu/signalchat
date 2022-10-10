@@ -1,9 +1,10 @@
+import StringFormat from "string-format";
 import { KeyApi } from "api";
 import { object, string, boolean, array } from "yup";
-import StringFormat from "string-format";
 import { CryptoInteractor } from "interactor";
 import { TxtConstant, SystemConstant } from "const";
 import { bufferToHex } from "utils/buffer.util";
+import { parseResponse } from "utils/api.util";
 import { PrekeyModel } from "models";
 
 function writePreKeyBundleToDB(prekeyBundle) {
@@ -69,7 +70,6 @@ export async function initKeys() {
   });
 
   let responseSchema = object({
-    success: boolean().required(),
     error: string().default(""),
   })
 
@@ -96,75 +96,45 @@ export async function initKeys() {
 
   // Send data
   var response = await KeyApi.initKeys(request);
+  var {
+    error, 
+    responseData,
+    isServerResponse
+  } = parseResponse(responseSchema, response);
 
-  // Check output
-  var success = false;
-  var error = "";
-  var data = responseSchema.cast({
-    success: success,
-    error: error,
-  });
-
-  if (response.ok) {
+  // Write keys to database if upload is successful!
+  if (!error && isGenerateNewKeys)
     try {
-      // Validate input
-      data = responseSchema.validateSync(response.data);
-      
-      // Write keys to database if upload is successful!
-      try {
-        if (data.success && isGenerateNewKeys)
-          writePreKeyBundleToDB(prekeyBundle);
-        return data;
-      } catch (err) {
-        error = StringFormat(TxtConstant.FM_DATABASE_ERROR, err);
-      }
+      writePreKeyBundleToDB(prekeyBundle);
     } catch (err) {
-      error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
+      return {
+        error: StringFormat(TxtConstant.FM_DATABASE_ERROR, err)
+      }
     }
-  } else {
-    error = StringFormat(TxtConstant.FM_REQUEST_ERROR, response.problem);
-  }
 
-  // Return data to view.
-  return responseSchema.cast({
-    success: success,
-    error: error,
-  });
+  return {
+    error: error
+  }
 }
 
 export async function checkAndUploadKey() {
   // Create schemas
   let responseSchema = object({
-    success: boolean().required(),
-    error: string().default(""),
+    isKeyExists: boolean().required(),
   })
 
   // Get API call
   var response = await KeyApi.checkKeyStatus();
-  var success = false;
-  var error = "";
+  var {
+    error, 
+    responseData,
+    isServerResponse
+  } = parseResponse(responseSchema, response);
 
-  if (response.ok) {
-    try {
-      // Validate input
-      var data = responseSchema.validateSync(response.data);
+  if (!error && !responseData.isKeyExists)
+    return await initKeys();
 
-      // Check if key exists, if not upload now!
-      if (!data.success)
-        return responseSchema.cast(await initKeys());
-      else 
-        return data;
-
-    } catch (err) {
-      error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
-    }
-  } else {
-    error = StringFormat(TxtConstant.FM_REQUEST_ERROR, response.problem);
-  }
-
-  // Return data to view.
-  return responseSchema.cast({
-    success: success,
+  return {
     error: error,
-  });
+  }
 }

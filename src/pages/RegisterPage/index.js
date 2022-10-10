@@ -19,7 +19,7 @@ const RegisterPage = () => {
       alert(error);
     },
     onSuccess: (data, variables, context) => {
-      if (data.success) {
+      if (!data.error) {
         // TODO: Set data so that the notification badge display on screen.
         // alert(TxtConstant.TXT_SUCCESSFULLY_REGISTER);
         window.location.href = PathConstant.PATH_LOGIN;

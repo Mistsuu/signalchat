@@ -27,7 +27,7 @@ const HomePage = () => {
       window.location.href = ApiConstant.PATH_LOGIN;
     },
     onSuccess: (data, variables, context) => {
-      if (!data.success) {
+      if (data.error) {
         // TODO: Set data so that the notification badge display on screen.
         alert(data.error);
         // Remove storage

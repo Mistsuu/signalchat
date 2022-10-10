@@ -1,10 +1,12 @@
 const { object, string, number, array } = require("yup");
+const crypto = require("crypto");
 const { SystemConstant, NativeConstant } = require("../const");
 const BaseModel = require('./base.model');
 
 const sessionSchema = object({
   userID: string().required(),
   deviceID: string().required(),
+  sessionID: string().default(crypto.randomBytes(16).toString("hex")),
   state: number().required().oneOf(Object.values(SystemConstant.SESSION_STATE)),
   
   // Data used in Double Rachet

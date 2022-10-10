@@ -1,7 +1,6 @@
-import StringFormat from "string-format";
-import { object, string, boolean, array } from "yup";
+import { object, string } from "yup";
 import { AuthApi } from "api";
-import { TxtConstant } from "const";
+import { parseResponse } from "utils/api.util";
 import { PrekeyModel } from "models";
 
 export async function authLogin(data) {
@@ -12,7 +11,6 @@ export async function authLogin(data) {
   });
 
   let responseSchema = object({
-    success: boolean().required(),
     error: string().default(""),
     token: string().default(""),
     deviceID: string().default(""),
@@ -24,23 +22,18 @@ export async function authLogin(data) {
   var response = await AuthApi.login(request);
 
   // Check output
-  var success = false;
-  var error = "";
-  if (response.ok) {
-    try {
-      var data = responseSchema.validateSync(response.data);
-      return data;
-    } catch (err) {
-      error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
-    }
-  } else {
-    error = StringFormat(TxtConstant.FM_REQUEST_ERROR, response.problem);
-  }
+  var {
+    error, 
+    responseData,
+    isServerResponse
+  } = parseResponse(responseSchema, response);
 
-  return responseSchema.cast({
-    success: success,
+  return {
     error: error,
-  });
+    token: !error ? responseData.token : "",
+    userID: !error ? responseData.userID : "",
+    deviceID: !error ? responseData.deviceID : "",
+  };
 };
 
 export async function authRegister(data) {
@@ -51,8 +44,7 @@ export async function authRegister(data) {
   });
 
   let responseSchema = object({
-    success: boolean().required(),
-    error: string().default(),
+    error: string().default(""),
   });
 
   // Send data
@@ -60,23 +52,15 @@ export async function authRegister(data) {
   var response = await AuthApi.register(request);
 
   // Check output
-  var success = false;
-  var error = "";
-  if (response.ok) {
-    try {
-      var data = responseSchema.validateSync(response.data);
-      return data;
-    } catch (err) {
-      error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
-    }
-  } else {
-    error = StringFormat(TxtConstant.FM_REQUEST_ERROR, response.problem);
-  }
+  var {
+    error, 
+    responseData,
+    isServerResponse
+  } = parseResponse(responseSchema, response);
 
-  return responseSchema.cast({
-    success: success,
-    error: error,
-  });
+  return {
+    error: error
+  };
 };
 
 export async function authLogout() {
