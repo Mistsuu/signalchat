@@ -25,7 +25,7 @@ const API_INITKEY = "/initkey";
 const API_UPDATEONETIME = "/updateOneTime";
 const API_CHECKKEYSTATUS = "/checkKeyStatus";
 const API_SEND = "/send/{0}";
-const API_GETKEY = "/getkey/{0}";
+const API_GETKEY = "/getkey/{0}/{1}";
 
 // Problems (throw by APISauce)
 const PROB_NONE = null;

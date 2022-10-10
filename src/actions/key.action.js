@@ -2,10 +2,10 @@ import StringFormat from "string-format";
 import { KeyApi } from "api";
 import { object, string, boolean, array } from "yup";
 import { CryptoInteractor } from "interactor";
-import { TxtConstant, SystemConstant } from "const";
-import { bufferToHex } from "utils/buffer.util";
+import { TxtConstant, SystemConstant, NativeConstant } from "const";
+import { bufferToHex, hexToBuffer } from "utils/buffer.util";
 import { parseResponse } from "utils/api.util";
-import { PrekeyModel } from "models";
+import { DeviceModel, PrekeyModel } from "models";
 
 function writePreKeyBundleToDB(prekeyBundle) {
   // Clear database file
@@ -14,24 +14,24 @@ function writePreKeyBundleToDB(prekeyBundle) {
   // Write identity key
   PrekeyModel.create({
     keyType: SystemConstant.KEY_TYPE.identity,
-    publicKey: bufferToHex(prekeyBundle.identityKey.publicKey),
-    privateKey: bufferToHex(prekeyBundle.identityKey.privateKey)
+    publicKey: bufferToHex(prekeyBundle[NativeConstant.IDENTITY_KEY][NativeConstant.PUBLIC_KEY]),
+    privateKey: bufferToHex(prekeyBundle[NativeConstant.IDENTITY_KEY][NativeConstant.PRIVATE_KEY])
   })
 
   // Write signed prekey
   PrekeyModel.create({
     keyType: SystemConstant.KEY_TYPE.signedPrekey,
-    publicKey: bufferToHex(prekeyBundle.signedPreKey.publicKey),
-    privateKey: bufferToHex(prekeyBundle.signedPreKey.privateKey),
-    signature: bufferToHex(prekeyBundle.signature),
+    publicKey: bufferToHex(prekeyBundle[NativeConstant.SIGNED_PREKEY][NativeConstant.PUBLIC_KEY]),
+    privateKey: bufferToHex(prekeyBundle[NativeConstant.SIGNED_PREKEY][NativeConstant.PRIVATE_KEY]),
+    signature: bufferToHex(prekeyBundle[NativeConstant.SIGNATURE]),
   })
   
   // Write one time prekeys
-  for (var onetimePrekey of prekeyBundle.oneTimePreKeys)
+  for (var onetimePrekey of prekeyBundle[NativeConstant.ONETIME_PREKEYS])
     PrekeyModel.create({
       keyType: SystemConstant.KEY_TYPE.onetimePrekey,
-      publicKey: bufferToHex(onetimePrekey.publicKey),
-      privateKey: bufferToHex(onetimePrekey.privateKey),
+      publicKey: bufferToHex(onetimePrekey[NativeConstant.PUBLIC_KEY]),
+      privateKey: bufferToHex(onetimePrekey[NativeConstant.PRIVATE_KEY]),
     });
 }
 
@@ -80,7 +80,7 @@ export async function initKeys() {
   if (isGenerateNewKeys) {
     prekeyBundle = CryptoInteractor.generateBobPrekeyBundle();
     request = requestSchema.cast({
-      identityKey: bufferToHex(prekeyBundle.identityKey.publicKey),
+      identityKey: bufferToHex(prekeyBundle[NativeConstant.IDENTITY_KEY][NativeConstant.PUBLIC_KEY]),
       signedPrekey: bufferToHex(prekeyBundle.signedPreKey.publicKey),
       signature: bufferToHex(prekeyBundle.signature),
       onetimePrekeys: prekeyBundle.oneTimePreKeys.map(onetimePrekey => bufferToHex(onetimePrekey.publicKey)),
@@ -99,7 +99,6 @@ export async function initKeys() {
   var {
     error, 
     responseData,
-    isServerResponse
   } = parseResponse(responseSchema, response);
 
   // Write keys to database if upload is successful!
@@ -128,7 +127,6 @@ export async function checkAndUploadKey() {
   var {
     error, 
     responseData,
-    isServerResponse
   } = parseResponse(responseSchema, response);
 
   if (!error && !responseData.isKeyExists)
@@ -136,5 +134,77 @@ export async function checkAndUploadKey() {
 
   return {
     error: error,
+  }
+}
+
+function verifyPrekeyBundle(userID, deviceID, prekeyBundle) {
+  const record = DeviceModel.findOne({
+    userID: userID,
+    deviceID: deviceID,
+  });
+
+  // Verify the signed pre-key if it's came from
+  // our identity key.
+  if (!CryptoInteractor.verifyBobPrekeyBundle({
+    [NativeConstant.IDENTITY_KEY]: {
+      [NativeConstant.PUBLIC_KEY]: hexToBuffer(prekeyBundle.identityKey)
+    },
+    [NativeConstant.SIGNED_PREKEY]: {
+      [NativeConstant.PUBLIC_KEY]: hexToBuffer(prekeyBundle.signedPrekey)
+    },
+    [NativeConstant.SIGNATURE]: hexToBuffer(prekeyBundle.signature)
+  })) {
+    return {
+      error: TxtConstant.ERR_VERIFY_PREKEY_BUNDLE_FAILED
+    }
+  }
+
+  console.log("verified")
+
+  // If record does not exists, create one
+  // else check it with the current identity key.
+  if (record === null) {
+    DeviceModel.create({
+      userID: userID,
+      deviceID: deviceID,
+      identityKey: prekeyBundle.identityKey,
+      state: SystemConstant.DEVICE_STATE.active
+    })
+  }
+  else if (record.identityKey !== prekeyBundle.identityKey) {
+    return {
+      error: TxtConstant.ERR_VERIFY_PREKEY_BUNDLE_FAILED
+    }
+  }
+   
+  return {
+    ...prekeyBundle,
+    error: "",
+  };
+}
+
+export async function fetchPrekeyBundle(userID, deviceID) {
+  // Create schemas
+  var responseSchema = object({
+    identityKey: string().default(""), 
+    signedPrekey: string().default(""),
+    signature: string().default(""),
+    oneTimePrekey: string().default(""),
+    error: string().default(""),
+  });
+
+  var response = await KeyApi.getKey(userID, deviceID);
+  var {
+    error,
+    responseData,
+  } = parseResponse(responseSchema, response);
+
+  // Handle key change.
+  if (!error) {
+    return verifyPrekeyBundle(userID, deviceID, responseData)
+  }
+
+  return {
+    error: error
   }
 }

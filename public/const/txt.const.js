@@ -18,6 +18,7 @@ const ERR_CANNOT_CONNECT_TO_SERVER = "Cannot connect to server!";
 const ERR_NETWORK_IS_NOT_AVAILIBLE = "Network is not availible!";
 const ERR_REQUEST_HAS_BEEN_CANCELLED = "Request has been cancelled by the user.";
 const ERR_UNKNOWN_ERROR = "Unknown error.";
+const ERR_VERIFY_PREKEY_BUNDLE_FAILED = "Verify prekey bundle failed";
 
 // Formats
 const FM_ERROR = "Error: {0}"
@@ -45,6 +46,7 @@ module.exports = {
   ERR_NETWORK_IS_NOT_AVAILIBLE,
   ERR_REQUEST_HAS_BEEN_CANCELLED,
   ERR_UNKNOWN_ERROR,
+  ERR_VERIFY_PREKEY_BUNDLE_FAILED,
   // Formats
   FM_ERROR,
   FM_REQUEST_ERROR,

@@ -1,7 +1,7 @@
 import { object, string } from "yup";
 import { AuthApi } from "api";
 import { parseResponse } from "utils/api.util";
-import { PrekeyModel } from "models";
+import { DeviceModel, MessageModel, PrekeyModel } from "models";
 
 export async function authLogin(data) {
   // Create schemas
@@ -64,4 +64,6 @@ export async function authRegister(data) {
 export async function authLogout() {
   // Clear database files
   PrekeyModel.dropAll();
+  MessageModel.dropAll();
+  DeviceModel.dropAll();
 }

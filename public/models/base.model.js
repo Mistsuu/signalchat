@@ -100,7 +100,7 @@ const findOneWithId = (dbFilepath, constraints) => {
 
   var jsonData = getJSONData(dbFilepath);
   var index = findOneInDBArray(jsonData, constraints);
-  return index === null ? null : jsonData[index];
+  return index === null ? { _id: null, _data: null } : jsonData[index];
 }
 
 const findAll = (dbFilepath, constraints) => {

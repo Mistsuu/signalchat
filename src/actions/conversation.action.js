@@ -7,6 +7,7 @@ import { DeviceModel, MessageModel, SessionModel } from "models";
 import { CryptoInteractor } from "interactor";
 import { getLocalStorage } from "utils/storage.util";
 import { parseResponse } from "utils/api.util";
+import { KeyAction } from "actions";
 
 function unHexifyRachetStateObj(obj)
 {
@@ -108,7 +109,9 @@ function markDevicesAsStale(userID, deviceIDs)
 
 function sendMessageForNewDevices(userID, deviceIDs, message, messageID)
 {
-  console.log(deviceIDs)
+  for (var deviceID of deviceIDs) {
+    KeyAction.fetchPrekeyBundle(userID, deviceID).then(data => console.log(data));
+  }
   return {
     error: ""
   }
