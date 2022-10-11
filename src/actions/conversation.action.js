@@ -651,3 +651,19 @@ export async function periodicallyPullMessages()
     await new Promise(r => setTimeout(r, 1000));
   }
 }
+
+
+// ==============================================================================================================
+//                                             FETCHES DATA 
+// ==============================================================================================================
+
+export async function fetchMessagesFromDB(userID)
+{
+  try {
+    const messageRecords = MessageModel.findAll({ userID: userID });
+    return messageRecords;
+  }
+  catch {
+    return [];
+  }
+}

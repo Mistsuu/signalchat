@@ -9,10 +9,26 @@ import ChatTitle from "./ChatTitle";
 import { SystemConstant, QueryConstant } from "const";
 import { ConversationAction } from "actions";
 
+
 const ChatBox = ({ userID, ...otherProps }) => {
   const [messages, setMessages] = useState([]);
   const classes = useStyles();
   
+  // -------------------------------- Query message every 1 second. --------------------------------
+
+  const getMessages = async ({ queryKey }) => {
+    const [_, userID] = queryKey;
+    const messageRecords = await ConversationAction.fetchMessagesFromDB(userID);
+    setMessages(messageRecords
+                  .sort((leftRecord, rightRecord) => rightRecord.timestamp - leftRecord.timestamp) 
+                  .map(messageRecord => ({ content: messageRecord.message, side: messageRecord.side })));
+
+    return true;
+  }
+  useQuery(['messages', userID], getMessages, { refetchInterval:1000 });
+
+  // -------------------------------- Send new message to the other side. --------------------------------
+
   const onUpdateNewMessage = (newMessageContent) => {
     let newMessage = {
       content: newMessageContent,
@@ -39,6 +55,8 @@ const ChatBox = ({ userID, ...otherProps }) => {
       }
     },
   })
+
+  // -------------------------------- Some view here. --------------------------------
 
   return (
     <>
