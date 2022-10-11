@@ -137,7 +137,7 @@ const findOneByIdAndRemove = (dbFilepath, id) => {
     if (jsonData[index]._id === id) {
       var item = jsonData[index];
       jsonData.splice(index, 1);
-      jsonData.writeFileSync(dbFilepath, jsonData);
+      jsonfile.writeFileSync(dbFilepath, jsonData);
       return item._data;
     }
   }

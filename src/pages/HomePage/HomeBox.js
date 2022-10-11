@@ -6,7 +6,7 @@ import BackBtn from "./BackBtn";
 import ExitBtn from "./ExitBtn";
 
 const HomeBox = ({ logOutFn, ...otherProps }) => {
-  const [userID, setUserID] = useState("vietanh");
+  const [userID, setUserID] = useState("vietanh1");
 
   return (
     <>

@@ -631,7 +631,6 @@ export async function periodicallyPullMessages()
 
     if (!error) {
       await handleNewMessages(responseData.messages)
-      break;
     } 
     // If server's timeout.
     else if (response.problem === ApiConstant.PROB_TIMEOUT_ERROR) {
