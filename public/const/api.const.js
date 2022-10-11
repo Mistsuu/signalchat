@@ -4,6 +4,7 @@ const HEADER_DEFAULT = {
   Accept: "application/json",
 };
 const TIMEOUT = 30000;
+const LONG_POLLING_TIMEOUT = 10 * 60 * 1000;
 
 // HTTP Status
 const STT_OK = 200;
@@ -41,6 +42,7 @@ module.exports = {
   BASE_URL,
   HEADER_DEFAULT,
   TIMEOUT,
+  LONG_POLLING_TIMEOUT,
   // HTTP Status
   STT_OK,
   STT_BAD_REQUEST,

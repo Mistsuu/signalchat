@@ -38,12 +38,10 @@ const ChatBox = ({ userID, ...otherProps }) => {
       alert(error);
     },
     onSuccess: (data, variables, context) => {
-      // if (data.success) {
-
-      // } else {
-      //   // TODO: Set data so that the notification badge display on screen.
-      //   alert(data.error);
-      // }
+      if (data.error) {
+        // TODO: Set data so that the notification badge display on screen.
+        alert(data.error);
+      }
     },
     onSettled: () => {
     }

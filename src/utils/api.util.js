@@ -35,10 +35,7 @@ export const parseResponse = (responseSchema, response) => {
       error = StringFormat(TxtConstant.FM_REQUEST_ERROR, TxtConstant.ERR_INVALID_RESPONSE_FROM_SERVER);
     }
   } else if (response.problem === ApiConstant.PROB_SERVER_ERROR) {
-    if (response.hasOwnProperty("data") && response.data.hasOwnProperty("error"))
-      error = response.data.error ? response.data.error : TxtConstant.ERR_UNKNOWN_ERROR_FROM_SERVER;
-    else 
-      error = TxtConstant.ERR_UNKNOWN_ERROR_FROM_SERVER;
+    error = TxtConstant.ERR_UNKNOWN_ERROR_FROM_SERVER;
   } else if (response.problem === ApiConstant.PROB_TIMEOUT_ERROR) {
     error = TxtConstant.ERR_REQUEST_IS_TIMEOUT;
   } else if (response.problem === ApiConstant.PROB_CONNECTION_ERROR) {

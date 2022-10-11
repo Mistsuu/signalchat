@@ -173,6 +173,25 @@ function markDevicesAsStale(userID, deviceIDs)
 
 async function sendIntialMessageForNewDevices(userID, deviceIDs)
 { 
+  // Schema for publishing message to server.
+  const requestSchema = array().of(
+    object({
+      type: number().required().oneOf(Object.values(SystemConstant.MESSAGE_TYPE)),    // Type of message: initiate / normal
+      header: string().required(),
+      message: string().required(),
+      messageID: string().required(),
+      timestamp: number().default(Date.now()),
+      receipientDeviceID: string().required(),
+    })
+  );
+
+  const responseSchema = object({
+    oldDeviceIDs: array().of(string()).default([]),
+    newDeviceIDs: array().of(string()).default([]),
+    error: string().default(""),
+  });
+
+  // Create initial ciphertexts.
   var messageObjs = [];
   for (var deviceID of deviceIDs) {
     var {error, ...NativeBobPrekeyBundle} = await KeyAction.fetchPrekeyBundle(userID, deviceID);
@@ -190,8 +209,20 @@ async function sendIntialMessageForNewDevices(userID, deviceIDs)
     messageObjs.push(messageObj);
   }
 
+  // Check input validity.
+  var request = requestSchema.cast(messageObjs);
+
+  // Get response
+  var response = await ConversationApi.sendMessage(userID, request);
+  var {
+    error,
+    responseData,
+  } = parseResponse(responseSchema, response);
+
   return {
-    error: ""
+    ...responseData,
+    error: error,
+    responseStatus: response.status,
   }
 }
 
@@ -239,41 +270,44 @@ async function sendMessageForStoredSessions(userID, message, messageID, filtered
   }
 }
 
-export async function handleSendAndRetries(userID, message, messageID, nRetries=3)
+export async function handleSendAndRetries(userID, message, messageID)
 {
   var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, []);
 
   if (error) {
-    if (responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT) {
-      var {error} = markDevicesAsStale(userID, responseData.oldDeviceIDs);
-      if (error)
-        return {
-          error: error
-        }
-
-      var {error} = await sendIntialMessageForNewDevices(userID, responseData.newDeviceIDs);
-      if (error) 
-        return {
-          error: error
-        }
-      
-      var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, responseData.newDeviceIDs);
-      if (error) {
-        if (responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT) {
-          return {
-            error: ""
-          }
-        } else {
-          return {
-            error: error,
-          }
-        }
-      }
-    } 
-    else 
+    // If error is not related to adding new devices, we should exit.
+    if (!(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) {
       return {
         error: error
       }
+    }
+
+    // Remove old devices
+    var {error} = markDevicesAsStale(userID, responseData.oldDeviceIDs);
+    if (error)
+      return {
+        error: error
+      }
+    
+    // Send initial message for new devices
+    var { error, responseStatus, ...responseData } = await sendIntialMessageForNewDevices(userID, responseData.newDeviceIDs);
+    if (error && !(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) { // Ignore new devices added, we only care after we send actual message.
+      return {
+        error: error
+      }
+    }
+    
+    // Send message for new devices
+    var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, responseData.newDeviceIDs);
+    if (error && !(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) { // Ignore new devices added, we only care after we send actual message next time.
+      return {
+        error: error,
+      }
+    }
+  }
+
+  return {
+    error: ""
   }
 }
 
@@ -298,6 +332,7 @@ export async function sendMessage(data)
   // --------------------- Request send to the UserID's mailbox ---------------------.
   var { error } = handleSendAndRetries(data.receipientUserID, data.message, messageID);
   if (error) {
+    // TODO: remove message
     return {
       error: error
     }
@@ -311,4 +346,7 @@ export async function sendMessage(data)
     }
   }
 
+  return {
+    error: ""
+  }
 }
