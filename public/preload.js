@@ -43,4 +43,5 @@ contextBridge.exposeInMainWorld("SignalModel", {
   Session: require("./models/session.model"),
   Message: require("./models/message.model"),
   Device: require("./models/device.model"),
+  Cipher: require("./models/cipher.model"),
 })

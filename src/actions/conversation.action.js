@@ -3,7 +3,7 @@ import StringFormat from "string-format";
 import { ConversationApi } from "api";
 import { bufferToHex, hexToBuffer } from "utils/buffer.util";
 import { SystemConstant, StorageConstant, TxtConstant, NativeConstant, ApiConstant } from "const";
-import { DeviceModel, MessageModel, SessionModel } from "models";
+import { DeviceModel, MessageModel, SessionModel, CipherModel, PrekeyModel } from "models";
 import { CryptoInteractor } from "interactor";
 import { getLocalStorage } from "utils/storage.util";
 import { parseResponse } from "utils/api.util";
@@ -69,8 +69,7 @@ function encryptIntialMessageNewSession(userID, deviceID, NativeBobPrekeyBundle)
     })
     
     // Encrypt (IKa || IKb) with shared secret then send to Bob to verify the session.
-    var plaintext = new TextEncoder().encode(associatedData);
-    var ciphertext = CryptoInteractor.innerEncrypt(sharedSecret, plaintext, associatedData);
+    var ciphertext = CryptoInteractor.innerEncrypt(sharedSecret, associatedData, associatedData);
     return {
       type: SystemConstant.MESSAGE_TYPE.initial,
       header: JSON.stringify(
@@ -358,6 +357,76 @@ export async function sendMessage(data)
 //                                             DECRYPTION 
 // ==============================================================================================================
 
+async function handleNewMessages(messages)
+{
+  for (var message of messages) {
+    // If message is normal, put it into database first.
+    if (message.type === SystemConstant.MESSAGE_TYPE.normal) {
+      // CipherModel.create(message);
+      continue;
+    }
+
+    // Else, verify key from the other side & create a new session.
+    if (message.type === SystemConstant.MESSAGE_TYPE.initial) {
+      // Parse JSON header.
+      var header;
+      var headerSchema = object({
+        aliceIdentityKey: string().required(),
+        aliceEphemeralKey: string().required(),
+        bobOneTimePrekey: string().default(""),
+      });
+
+      try {
+        header = JSON.parse(message.header);
+        header = headerSchema.validateSync(header);
+      }
+      catch {
+        continue;
+      }
+      
+      // Fetch Bob's key, check if it exists.
+      var bobIdentityKeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.identity });
+      var bobSignedPrekeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.signedPrekey });
+      // var bobOneTimePrekeyRecord = PrekeyModel.findOneAndRemove({ 
+      var bobOneTimePrekeyRecord = 
+        header.bobOneTimePrekey === "" // todo: change to !==
+          ? PrekeyModel.findOne({ 
+              keyType: SystemConstant.KEY_TYPE.onetimePrekey,
+              publicKey: header.bobOneTimePrekey,
+            })
+          : "";
+      
+      if (bobOneTimePrekeyRecord === null || bobSignedPrekeyRecord === null || bobIdentityKeyRecord === null) {
+        continue
+      }
+
+      // Create alice's and bob's key
+      var NativeAlicePrekeyBundle = CryptoInteractor.getNativeAlicePrekeyBundle(
+        header.aliceIdentityKey,
+        header.aliceEphemeralKey, 
+      );
+
+      var NativeBobPrekeyBundle = CryptoInteractor.getNativeBobPrekeyBundle(
+        bobIdentityKeyRecord.publicKey,
+        bobSignedPrekeyRecord.publicKey,
+        bobSignedPrekeyRecord.signature,
+        bobOneTimePrekeyRecord !== "" ? bobOneTimePrekeyRecord.publicKey : "",
+      )
+
+      // Calculates associated data, shared secret & decrypt message
+      var associatedData = CryptoInteractor.calculateAssociatedData(NativeAlicePrekeyBundle, NativeBobPrekeyBundle);
+      var sharedSecret = CryptoInteractor.calculateSharedSecretB(NativeBobPrekeyBundle, NativeAlicePrekeyBundle);
+      var initialMessage = CryptoInteractor.innerDecrypt(sharedSecret, hexToBuffer(message.message), associatedData);
+      
+      console.log(initialMessage)
+      console.log(associatedData)
+      if (initialMessage === associatedData) {
+        console.log("successful decrypt!");
+      }
+    }
+  }
+}
+
 export async function periodicallyPullMessages()
 {
   // Create schema
@@ -381,10 +450,10 @@ export async function periodicallyPullMessages()
       error, 
       responseData
     } = parseResponse(responseSchema, response);
-    console.log(response)
 
     if (!error) {
-
+      await handleNewMessages(responseData.messages)
+      break;
     } 
     // If server's timeout.
     else if (response.problem === ApiConstant.PROB_TIMEOUT_ERROR) {
