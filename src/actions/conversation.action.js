@@ -341,10 +341,12 @@ export async function sendMessage(data)
   }
 
   // --------------------- Request send to the our other devices' mailbox ---------------------.
-  var { error } = handleSendAndRetries(getLocalStorage(StorageConstant.USER_ID), data.message, messageID);
-  if (error) {
-    return {
-      error: error
+  if (getLocalStorage(StorageConstant.USER_ID) !== data.receipientUserID) {
+    var { error } = handleSendAndRetries(getLocalStorage(StorageConstant.USER_ID), data.message, messageID);
+    if (error) {
+      return {
+        error: error
+      }
     }
   }
 
@@ -537,7 +539,7 @@ function handleUndecryptedMessages()
             userID: cipherRecord.sendUserID,
             message: new TextDecoder().decode(plaintext),
             timestamp: cipherRecord.timestamp,
-            side: SystemConstant.CHAT_SIDE_TYPE.their,
+            side: cipherRecord.sendUserID !== getLocalStorage(StorageConstant.USER_ID) ? SystemConstant.CHAT_SIDE_TYPE.their : SystemConstant.CHAT_SIDE_TYPE.our,
           })
 
           // Remove ciphertext!
