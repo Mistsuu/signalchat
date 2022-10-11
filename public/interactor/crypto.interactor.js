@@ -33,6 +33,7 @@ const {
   SIGNED_PREKEY,
   ONETIME_PREKEYS,
   SIGNATURE,
+  ONETIME_PREKEY,
 } = require("../const/native.const");
 
 const PrekeyModel = require("../models/prekey.model");
@@ -84,6 +85,49 @@ const verifyBobPrekeyBundle = (bobPrekeyBundle) => {
          );
 }
 
+const getNativeAlicePrekeyBundle = (
+  identityKeyPublic, 
+  ephemeralKeyPublic
+) => {
+  return {
+    [IDENTITY_KEY]: {
+      [PUBLIC_KEY]: hex2Buffer(identityKeyPublic),
+      [PRIVATE_KEY]: new Uint8Array(),
+    },
+    [EPHEMERAL_KEY]: {
+      [PUBLIC_KEY]: hex2Buffer(ephemeralKeyPublic),
+      [PRIVATE_KEY]: new Uint8Array(),
+    },
+  };
+}
+
+const getNativeBobPrekeyBundle = (
+  identityKeyPublic, 
+  signedPrekeyPublic, 
+  signature, 
+  onetimePrekeyPublic
+) => {
+  return {
+    [IDENTITY_KEY]: {
+      [PUBLIC_KEY]: hex2Buffer(identityKeyPublic),
+      [PRIVATE_KEY]: new Uint8Array(),
+    },
+    [SIGNED_PREKEY]: {
+      [PUBLIC_KEY]: hex2Buffer(signedPrekeyPublic),
+      [PRIVATE_KEY]: new Uint8Array(),
+    },
+    [SIGNATURE]: hex2Buffer(signature),
+    [ONETIME_PREKEY]: onetimePrekeyPublic 
+                        ? {
+                            [PUBLIC_KEY]: hex2Buffer(onetimePrekeyPublic),
+                            [PRIVATE_KEY]: new Uint8Array(),
+                          } 
+                        : {
+                            [PUBLIC_KEY]: new Uint8Array()
+                          }
+  };
+}
+
 module.exports = {
   getIdentityKey,
   generateAlicePrekeyBundle,
@@ -101,4 +145,6 @@ module.exports = {
   serializeRachetHeader,
   deserializeRachetHeader,
   calculateAssociatedData,
+  getNativeAlicePrekeyBundle,
+  getNativeBobPrekeyBundle,
 }

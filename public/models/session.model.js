@@ -17,9 +17,9 @@ const sessionSchema = object({
     [NativeConstant.ROOTKEY]: string().required(),
     [NativeConstant.CHAINKEYSEND]: string(),
     [NativeConstant.CHAINKEYRECV]: string(),
-    [NativeConstant.IMESSSEND]: number().required(),
-    [NativeConstant.IMESSRECV]: number().required(),
-    [NativeConstant.PREVCHAINLEN]: number().required(),
+    [NativeConstant.IMESSSEND]: number().default(0),
+    [NativeConstant.IMESSRECV]: number().default(0),
+    [NativeConstant.PREVCHAINLEN]: number().default(0),
     [NativeConstant.SKIPPEDKEYS]: array().of(object({
                                               [NativeConstant.DHPUBLIC]: string().required(),
                                               [NativeConstant.IMESS]: number().required(),

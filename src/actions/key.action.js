@@ -145,21 +145,17 @@ function verifyPrekeyBundle(userID, deviceID, prekeyBundle) {
 
   // Verify the signed pre-key if it's came from
   // our identity key.
-  if (!CryptoInteractor.verifyBobPrekeyBundle({
-    [NativeConstant.IDENTITY_KEY]: {
-      [NativeConstant.PUBLIC_KEY]: hexToBuffer(prekeyBundle.identityKey)
-    },
-    [NativeConstant.SIGNED_PREKEY]: {
-      [NativeConstant.PUBLIC_KEY]: hexToBuffer(prekeyBundle.signedPrekey)
-    },
-    [NativeConstant.SIGNATURE]: hexToBuffer(prekeyBundle.signature)
-  })) {
+  var NativeBobPrekeyBundle = CryptoInteractor.getNativeBobPrekeyBundle(
+    hexToBuffer(prekeyBundle.identityKey),
+    hexToBuffer(prekeyBundle.signedPrekey),
+    hexToBuffer(prekeyBundle.signature),
+    hexToBuffer(prekeyBundle.oneTimePrekey)
+  );
+  if (!CryptoInteractor.verifyBobPrekeyBundle(NativeBobPrekeyBundle)) {
     return {
       error: TxtConstant.ERR_VERIFY_PREKEY_BUNDLE_FAILED
     }
   }
-
-  console.log("verified")
 
   // If record does not exists, create one
   // else check it with the current identity key.
@@ -178,7 +174,7 @@ function verifyPrekeyBundle(userID, deviceID, prekeyBundle) {
   }
    
   return {
-    ...prekeyBundle,
+    ...NativeBobPrekeyBundle,
     error: "",
   };
 }
