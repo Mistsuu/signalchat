@@ -58,6 +58,9 @@ function encryptIntialMessageNewSession(userID, deviceID, NativeBobPrekeyBundle)
     var associatedData = CryptoInteractor.calculateAssociatedData(NativeAlicePrekeyBundle, NativeBobPrekeyBundle);
     var rachetState = CryptoInteractor.rachetInitAlice(sharedSecret, NativeBobPrekeyBundle);
     hexifyRachetStateObj(rachetState);
+    
+    console.log(bufferToHex(sharedSecret));
+    console.log(bufferToHex(associatedData));
 
     // Save rachet state to database
     SessionModel.create({
@@ -70,15 +73,6 @@ function encryptIntialMessageNewSession(userID, deviceID, NativeBobPrekeyBundle)
     
     // Encrypt (IKa || IKb) with shared secret then send to Bob to verify the session.
     var ciphertext = CryptoInteractor.innerEncrypt(sharedSecret, associatedData, associatedData);
-    console.log(bufferToHex(associatedData));
-    console.log(bufferToHex(ciphertext));
-    console.log(bufferToHex(sharedSecret));
-    console.log(bufferToHex(CryptoInteractor.innerDecrypt(sharedSecret, associatedData, associatedData)));
-    console.log(bufferToHex(CryptoInteractor.innerDecrypt(sharedSecret, ciphertext, associatedData)));
-    console.log("...")
-    console.log("...")
-    console.log("...")
-    console.log("...")
     
     return {
       type: SystemConstant.MESSAGE_TYPE.initial,
