@@ -72,6 +72,12 @@ function encryptIntialMessageNewSession(userID, deviceID, NativeBobPrekeyBundle)
     var ciphertext = CryptoInteractor.innerEncrypt(sharedSecret, associatedData, associatedData);
     console.log(bufferToHex(associatedData));
     console.log(bufferToHex(ciphertext));
+    console.log(CryptoInteractor.innerDecrypt(sharedSecret, associatedData, associatedData));
+    console.log(CryptoInteractor.innerDecrypt(sharedSecret, ciphertext, associatedData));
+    console.log("...")
+    console.log("...")
+    console.log("...")
+    console.log("...")
     
     return {
       type: SystemConstant.MESSAGE_TYPE.initial,
