@@ -630,6 +630,10 @@ export async function periodicallyPullMessages()
     } = parseResponse(responseSchema, response);
 
     if (!error) {
+      // Tell server that we received the message :3
+      await ConversationApi.clearMessages();
+
+      // Decrypt & write messages to database!
       await handleNewMessages(responseData.messages)
     } 
     // If server's timeout.
