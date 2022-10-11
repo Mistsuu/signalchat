@@ -108,7 +108,7 @@ const innerEncrypt = (messageKey, plaintext, associatedData) => {
 //  returns {Buffer}
 //
 const innerDecrypt = (messageKey, ciphertext, associatedData) => {
-  return SignalProto_NativeObj.innerEncrypt(messageKey, ciphertext, associatedData);
+  return SignalProto_NativeObj.innerDecrypt(messageKey, ciphertext, associatedData);
 }
 
 

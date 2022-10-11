@@ -128,6 +128,38 @@ const getNativeBobPrekeyBundle = (
   };
 }
 
+const getFullNativeBobPrekeyBundle = (
+  identityKeyPublic, 
+  identityKeyPrivate, 
+
+  signedPrekeyPublic, 
+  signedPrekeyPrivate, 
+  signature, 
+
+  onetimePrekeyPublic,
+  onetimePrekeyPrivate,
+) => {
+  return {
+    [IDENTITY_KEY]: {
+      [PUBLIC_KEY]: hex2Buffer(identityKeyPublic),
+      [PRIVATE_KEY]: hex2Buffer(identityKeyPrivate),
+    },
+    [SIGNED_PREKEY]: {
+      [PUBLIC_KEY]: hex2Buffer(signedPrekeyPublic),
+      [PRIVATE_KEY]: hex2Buffer(signedPrekeyPrivate),
+    },
+    [SIGNATURE]: hex2Buffer(signature),
+    [ONETIME_PREKEY]: onetimePrekeyPublic 
+                        ? {
+                            [PUBLIC_KEY]: hex2Buffer(onetimePrekeyPublic),
+                            [PRIVATE_KEY]: hex2Buffer(onetimePrekeyPrivate),
+                          } 
+                        : {
+                            [PUBLIC_KEY]: new Uint8Array()
+                          }
+  };
+}
+
 module.exports = {
   getIdentityKey,
   generateAlicePrekeyBundle,
@@ -147,4 +179,5 @@ module.exports = {
   calculateAssociatedData,
   getNativeAlicePrekeyBundle,
   getNativeBobPrekeyBundle,
+  getFullNativeBobPrekeyBundle,
 }

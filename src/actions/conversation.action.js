@@ -389,7 +389,7 @@ async function handleNewMessages(messages)
       var bobSignedPrekeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.signedPrekey });
       // var bobOneTimePrekeyRecord = PrekeyModel.findOneAndRemove({ 
       var bobOneTimePrekeyRecord = 
-        header.bobOneTimePrekey === "" // todo: change to !==
+        header.bobOneTimePrekey !== ""
           ? PrekeyModel.findOne({ 
               keyType: SystemConstant.KEY_TYPE.onetimePrekey,
               publicKey: header.bobOneTimePrekey,
@@ -406,20 +406,26 @@ async function handleNewMessages(messages)
         header.aliceEphemeralKey, 
       );
 
-      var NativeBobPrekeyBundle = CryptoInteractor.getNativeBobPrekeyBundle(
+      var NativeBobPrekeyBundle = CryptoInteractor.getFullNativeBobPrekeyBundle(
         bobIdentityKeyRecord.publicKey,
+        bobIdentityKeyRecord.privateKey,
+
         bobSignedPrekeyRecord.publicKey,
+        bobSignedPrekeyRecord.privateKey,
         bobSignedPrekeyRecord.signature,
+
         bobOneTimePrekeyRecord !== "" ? bobOneTimePrekeyRecord.publicKey : "",
+        bobOneTimePrekeyRecord !== "" ? bobOneTimePrekeyRecord.privateKey : "",
       )
 
+      
       // Calculates associated data, shared secret & decrypt message
       var associatedData = CryptoInteractor.calculateAssociatedData(NativeAlicePrekeyBundle, NativeBobPrekeyBundle);
       var sharedSecret = CryptoInteractor.calculateSharedSecretB(NativeBobPrekeyBundle, NativeAlicePrekeyBundle);
       var initialMessage = CryptoInteractor.innerDecrypt(sharedSecret, hexToBuffer(message.message), associatedData);
       
-      console.log(initialMessage)
-      console.log(associatedData)
+      console.log(bufferToHex(sharedSecret))
+      console.log(bufferToHex(initialMessage))
       if (initialMessage === associatedData) {
         console.log("successful decrypt!");
       }
