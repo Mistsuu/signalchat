@@ -357,80 +357,252 @@ export async function sendMessage(data)
 //                                             DECRYPTION 
 // ==============================================================================================================
 
+function handleIntialMessage(message)
+{
+  // Parse JSON header.
+  var header;
+  var headerSchema = object({
+    aliceIdentityKey: string().required(),
+    aliceEphemeralKey: string().required(),
+    bobOneTimePrekey: string().default(""),
+  });
+
+  try {
+    header = JSON.parse(message.header);
+    header = headerSchema.validateSync(header);
+  }
+  catch {
+    return;
+  }
+
+  // Verify Alice's identity
+  const deviceRecord = DeviceModel.findOne({
+    userID: message.sendUserID,
+    deviceID: message.sendDeviceID,
+  });
+
+  if (deviceRecord === null) {
+    DeviceModel.create({
+      userID: message.sendUserID,
+      deviceID: message.sendDeviceID,
+      identityKey: header.aliceIdentityKey,
+      state: SystemConstant.DEVICE_STATE.active,
+    })
+  }
+  else if (deviceRecord.identityKey !== header.aliceIdentityKey) {
+    return;
+  }
+
+  // Fetch Bob's key, check if it exists.
+  var bobIdentityKeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.identity });
+  var bobSignedPrekeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.signedPrekey });
+  var bobOneTimePrekeyRecord = 
+    header.bobOneTimePrekey !== ""
+      ? PrekeyModel.findOneAndRemove({ 
+          keyType: SystemConstant.KEY_TYPE.onetimePrekey,
+          publicKey: header.bobOneTimePrekey,
+        })
+      : "";
+
+  if (bobOneTimePrekeyRecord === null || bobSignedPrekeyRecord === null || bobIdentityKeyRecord === null) {
+    return;
+  }
+
+  // Create alice's and bob's key
+  var NativeAlicePrekeyBundle = CryptoInteractor.getNativeAlicePrekeyBundle(
+    header.aliceIdentityKey,
+    header.aliceEphemeralKey, 
+  );
+
+  var NativeBobPrekeyBundle = CryptoInteractor.getFullNativeBobPrekeyBundle(
+    bobIdentityKeyRecord.publicKey,
+    bobIdentityKeyRecord.privateKey,
+
+    bobSignedPrekeyRecord.publicKey,
+    bobSignedPrekeyRecord.privateKey,
+    bobSignedPrekeyRecord.signature,
+
+    bobOneTimePrekeyRecord !== "" ? bobOneTimePrekeyRecord.publicKey : "",
+    bobOneTimePrekeyRecord !== "" ? bobOneTimePrekeyRecord.privateKey : "",
+  )
+
+  // Calculates associated data, shared secret & decrypt message
+  var associatedData = CryptoInteractor.calculateAssociatedData(NativeAlicePrekeyBundle, NativeBobPrekeyBundle);
+  var sharedSecret = CryptoInteractor.calculateSharedSecretB(NativeBobPrekeyBundle, NativeAlicePrekeyBundle);
+  var initialMessage;
+  try {
+    // Decrypt & verify initial message, which is the same as associated data.
+    initialMessage = CryptoInteractor.innerDecrypt(sharedSecret, hexToBuffer(message.message), associatedData);
+    if (bufferToHex(initialMessage) !== bufferToHex(associatedData))
+      return;
+  } 
+  catch {
+    return;
+  }
+
+  // Create rachet state
+  var rachetState = CryptoInteractor.rachetInitBob(sharedSecret, NativeBobPrekeyBundle);
+  hexifyRachetStateObj(rachetState)
+
+  // TODO: Create session
+  SessionModel.create({
+    userID: message.sendUserID,
+    deviceID: message.sendDeviceID,
+    state: SystemConstant.SESSION_STATE.active,
+    rachetState: rachetState,
+    associatedData: bufferToHex(associatedData)
+  })
+}
+
+function cacheUserDeviceData(cache, userID, deviceID, fetchCallback)
+{
+  if (!cache.hasOwnProperty(userID))
+    cache[userID] = {}
+  if (!cache[userID].hasOwnProperty(deviceID))
+    cache[userID][deviceID] = fetchCallback(userID, deviceID);
+  return cache[userID][deviceID]
+}
+
+function handleUndecryptedMessages()
+{
+  const cipherRecords = CipherModel.findAllWithId({});
+  const cacheDeviceStates = {}
+  const cacheSessionRecords = {}
+
+  // ======================   Callbacks to pull data and modify it   ======================
+  const getDeviceRecord = ( userID, deviceID ) => DeviceModel.findOne({
+                                                    userID: userID,
+                                                    deviceID: deviceID
+                                                  })
+  const getSessionRecords = ( userID, deviceID ) => {
+                                var tmpRecords = SessionModel.findAllWithId({
+                                  userID: userID,
+                                  deviceID: deviceID
+                                });
+
+                                for (var index in tmpRecords) {
+                                  unHexifyRachetStateObj(tmpRecords[index]._data.rachetState)
+                                  tmpRecords[index]._data.associatedData = hexToBuffer(tmpRecords[index]._data.associatedData);
+                                }
+
+                                return tmpRecords;
+                              }
+
+  // ======================   Decrypting messages...   ======================
+  for (var cipherRecordWithId of cipherRecords) {
+    var { 
+      _id:cipherRecordId, 
+      _data:cipherRecord
+    } = cipherRecordWithId;
+
+    try {
+      // Check device correspond to this messsage
+      var deviceRecord = cacheUserDeviceData(
+                            cacheDeviceStates, 
+                            cipherRecord.sendUserID, 
+                            cipherRecord.sendDeviceID,
+                            getDeviceRecord
+                          );
+      if (deviceRecord === null || deviceRecord.state === SystemConstant.DEVICE_STATE.stale)
+        continue;
+
+
+      // Find all sessions with this userID / deviceID
+      var sessionRecords = cacheUserDeviceData(
+                              cacheSessionRecords,
+                              cipherRecord.sendUserID, 
+                              cipherRecord.sendDeviceID,
+                              getSessionRecords
+                            );
+
+      // Pull rachetheader & ciphertext from records 
+      var rachetHeader = CryptoInteractor.deserializeRachetHeader(hexToBuffer(cipherRecord.header));
+      var ciphertext = hexToBuffer(cipherRecord.message);
+
+      // Try decrypt message using record.
+      for (var sessionRecord of sessionRecords) {
+        var {
+          rachetState:nxtRachetState,
+          plaintext
+        } = CryptoInteractor.signalDecrypt(
+              sessionRecord._data.rachetState, 
+              rachetHeader, 
+              ciphertext,
+              sessionRecord._data.associatedData
+            );
+
+        if (plaintext.length !== 0) {
+          // Save message!
+          MessageModel.create({
+            userID: cipherRecord.sendUserID,
+            message: new TextDecoder().decode(plaintext),
+            timestamp: cipherRecord.timestamp,
+            side: SystemConstant.CHAT_SIDE_TYPE.their,
+          })
+
+          // Remove ciphertext!
+          CipherModel.findOneByIdAndRemove(cipherRecordId);
+
+          // Check if current session is active/inactive.
+          if (sessionRecord._data.state === SystemConstant.SESSION_STATE.inactive) {
+            // Set current session record to active
+            sessionRecord._data.state = SystemConstant.SESSION_STATE.active;
+  
+            // Set other sessions to inactive
+            for (var sessionRecordJ of sessionRecords) {
+              if (sessionRecordJ._id !== sessionRecord._id) {
+                sessionRecordJ._data.state = SystemConstant.SESSION_STATE.active;
+              }
+            }
+          }
+
+          // Update rachet state!
+          sessionRecord._data.rachetState = nxtRachetState;
+          break;
+        }
+      }
+    }
+    catch (err){
+      console.error(err)
+      continue;
+    }
+  }
+
+  // ====================== Write the new rachetState into database. ======================
+
+  for (var userID of Object.keys(cacheSessionRecords)) {
+    for (var deviceID of Object.keys(cacheSessionRecords[userID])) {
+      for (var sessionRecord of cacheSessionRecords[userID][deviceID]) {
+        hexifyRachetStateObj(sessionRecord._data.rachetState);
+        sessionRecord._data.associatedData = bufferToHex(sessionRecord._data.associatedData);
+        SessionModel.findOneByIdAndUpdate(sessionRecord._id, {
+          rachetState: sessionRecord._data.rachetState,
+          state: sessionRecord._data.state,
+        })
+      }
+    }
+  }
+
+}
+
 async function handleNewMessages(messages)
 {
   for (var message of messages) {
     // If message is normal, put it into database first.
     if (message.type === SystemConstant.MESSAGE_TYPE.normal) {
-      // CipherModel.create(message);
+      // Create message.
+      CipherModel.create(message);
       continue;
     }
 
     // Else, verify key from the other side & create a new session.
     if (message.type === SystemConstant.MESSAGE_TYPE.initial) {
-      // Parse JSON header.
-      var header;
-      var headerSchema = object({
-        aliceIdentityKey: string().required(),
-        aliceEphemeralKey: string().required(),
-        bobOneTimePrekey: string().default(""),
-      });
-
-      try {
-        header = JSON.parse(message.header);
-        header = headerSchema.validateSync(header);
-      }
-      catch {
-        continue;
-      }
-      
-      // Fetch Bob's key, check if it exists.
-      var bobIdentityKeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.identity });
-      var bobSignedPrekeyRecord = PrekeyModel.findOne({ keyType: SystemConstant.KEY_TYPE.signedPrekey });
-      // var bobOneTimePrekeyRecord = PrekeyModel.findOneAndRemove({ 
-      var bobOneTimePrekeyRecord = 
-        header.bobOneTimePrekey !== ""
-          ? PrekeyModel.findOne({ 
-              keyType: SystemConstant.KEY_TYPE.onetimePrekey,
-              publicKey: header.bobOneTimePrekey,
-            })
-          : "";
-      
-      if (bobOneTimePrekeyRecord === null || bobSignedPrekeyRecord === null || bobIdentityKeyRecord === null) {
-        continue
-      }
-
-      // Create alice's and bob's key
-      var NativeAlicePrekeyBundle = CryptoInteractor.getNativeAlicePrekeyBundle(
-        header.aliceIdentityKey,
-        header.aliceEphemeralKey, 
-      );
-
-      var NativeBobPrekeyBundle = CryptoInteractor.getFullNativeBobPrekeyBundle(
-        bobIdentityKeyRecord.publicKey,
-        bobIdentityKeyRecord.privateKey,
-
-        bobSignedPrekeyRecord.publicKey,
-        bobSignedPrekeyRecord.privateKey,
-        bobSignedPrekeyRecord.signature,
-
-        bobOneTimePrekeyRecord !== "" ? bobOneTimePrekeyRecord.publicKey : "",
-        bobOneTimePrekeyRecord !== "" ? bobOneTimePrekeyRecord.privateKey : "",
-      )
-
-      
-      // Calculates associated data, shared secret & decrypt message
-      var associatedData = CryptoInteractor.calculateAssociatedData(NativeAlicePrekeyBundle, NativeBobPrekeyBundle);
-      var sharedSecret = CryptoInteractor.calculateSharedSecretB(NativeBobPrekeyBundle, NativeAlicePrekeyBundle);
-      var initialMessage = CryptoInteractor.innerDecrypt(sharedSecret, hexToBuffer(message.message), associatedData);
-      
-      console.log(bufferToHex(sharedSecret))
-      console.log(bufferToHex(initialMessage))
-      if (initialMessage === associatedData) {
-        console.log("successful decrypt!");
-      }
+      handleIntialMessage(message);
     }
   }
+
+  // Then we're gonna handle these messages later.
+  handleUndecryptedMessages();
 }
 
 export async function periodicallyPullMessages()

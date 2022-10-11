@@ -47,9 +47,7 @@ const HomePage = () => {
     },
   });
 
-  const pullMessageMutation = useMutation(ConversationAction.periodicallyPullMessages, {
-
-  })
+  const pullMessageMutation = useMutation(ConversationAction.periodicallyPullMessages);
 
   const logOutMutation = useMutation(AuthAction.authLogout, {
     onSettled: () => {

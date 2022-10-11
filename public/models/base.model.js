@@ -112,6 +112,15 @@ const findAll = (dbFilepath, constraints) => {
   return indices.map(index => jsonData[index]._data);
 }
 
+const findAllWithId = (dbFilepath, constraints) => {
+  if (!(constraints instanceof Object))
+    return [];
+
+  var jsonData = getJSONData(dbFilepath);
+  var indices = findAllInDBArray(jsonData, constraints);
+  return indices.map(index => jsonData[index]);
+}
+
 const findOneById = (dbFilepath, id) => {
   var jsonData = getJSONData(dbFilepath);
   for (var item of jsonData) {
@@ -217,6 +226,7 @@ const generate = (model, dbName) => {
     findOne: (constraints) => findOne(dbFilepath, constraints),
     findOneWithId: (constraints) => findOneWithId(dbFilepath, constraints),
     findAll: (constraints) => findAll(dbFilepath, constraints),
+    findAllWithId: (constraints) => findAllWithId(dbFilepath, constraints),
     dropAll: () => dropAll(dbFilepath),
     findOneById: (id) => findOneById(dbFilepath, id),
     findOneByIdAndRemove: (id) => findOneByIdAndRemove(dbFilepath, id),
