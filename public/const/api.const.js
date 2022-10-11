@@ -3,8 +3,7 @@ const BASE_URL = "http://172.16.88.158:1208";
 const HEADER_DEFAULT = {
   Accept: "application/json",
 };
-const TIMEOUT = 30000;
-const LONG_POLLING_TIMEOUT = 10 * 60 * 1000;
+const TIMEOUT = 5000;
 
 // HTTP Status
 const STT_OK = 200;
@@ -20,13 +19,18 @@ const STT_INTERNAL_SERVER = 500;
 // API
 const API_TEST = "/test";
 const API_TESTAUTH = "/test-auth";
+
 const API_LOGIN = "/login";
 const API_REGISTER = "/register";
+
 const API_INITKEY = "/initkey";
+const API_GETKEY = "/getkey/{0}/{1}";
 const API_UPDATEONETIME = "/updateOneTime";
 const API_CHECKKEYSTATUS = "/checkKeyStatus";
-const API_SEND = "/send/{0}";
-const API_GETKEY = "/getkey/{0}/{1}";
+
+const API_SENDMESSAGES = "/sendMessages/{0}";
+const API_FETCHMESSAGES = "/fetchMessages";
+const API_CLEARMESSAGES = "/clearMessages";
 
 // Problems (throw by APISauce)
 const PROB_NONE = null;
@@ -42,7 +46,7 @@ module.exports = {
   BASE_URL,
   HEADER_DEFAULT,
   TIMEOUT,
-  LONG_POLLING_TIMEOUT,
+  
   // HTTP Status
   STT_OK,
   STT_BAD_REQUEST,
@@ -53,16 +57,23 @@ module.exports = {
   STT_CONFLICT,
   STT_GONE,
   STT_NOT_ACCEPTABLE,
+  
   // API
   API_TEST,
   API_TESTAUTH,
+  
   API_LOGIN,
   API_REGISTER,
+  
   API_INITKEY,
-  API_UPDATEONETIME,
-  API_CHECKKEYSTATUS,
-  API_SEND,
   API_GETKEY,
+  API_CHECKKEYSTATUS,
+  API_UPDATEONETIME,
+
+  API_SENDMESSAGES,
+  API_FETCHMESSAGES,
+  API_CLEARMESSAGES,
+
   // Problems
   PROB_NONE,
   PROB_CLIENT_ERROR,

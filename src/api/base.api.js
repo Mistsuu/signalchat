@@ -15,13 +15,6 @@ export const DEFAULT_API_CONFIG = {
   paramSerializer: params => QueryString.stringify(params, { arrayFormat: "repeat" }),
 };
 
-export const LONG_POLLING_API_CONFIG = {
-  baseURL: ApiConstant.BASE_URL,
-  headers: ApiConstant.HEADER_DEFAULT,
-  timeout: ApiConstant.LONG_POLLING_TIMEOUT,
-  paramSerializer: params => QueryString.stringify(params, { arrayFormat: "repeat" }),
-}
-
 export const createAPI = (initConfig) => {
   initConfig = initConfig ? initConfig : DEFAULT_API_CONFIG;
   return apisauce.create(initConfig);
@@ -30,16 +23,6 @@ export const createAPI = (initConfig) => {
 export const createAPIWithToken = (initConfig) => {
   // Set config, or just use default
   initConfig = initConfig ? initConfig : DEFAULT_API_CONFIG;
-  // Get auth token from local storage
-  const authToken = getLocalStorage(StorageConstant.AUTH_TOKEN);
-  if (authToken !== undefined)
-    initConfig.headers.Authorization = `Bearer ${authToken}`;
-  return apisauce.create(initConfig);
-}
-
-export const createLongPollingApiWithToken = (initConfig) => {
-  // Set config, or just use default
-  initConfig = initConfig ? initConfig : LONG_POLLING_API_CONFIG;
   // Get auth token from local storage
   const authToken = getLocalStorage(StorageConstant.AUTH_TOKEN);
   if (authToken !== undefined)

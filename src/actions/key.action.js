@@ -122,7 +122,7 @@ export async function checkAndUploadKey() {
     isKeyExists: boolean().required(),
   })
 
-  // Get API call
+  // Get API call result
   var response = await KeyApi.checkKeyStatus();
   var {
     error, 
@@ -195,12 +195,12 @@ export async function fetchPrekeyBundle(userID, deviceID) {
     responseData,
   } = parseResponse(responseSchema, response);
 
+  // Returns error.
+  if (error)
+    return {
+      error: error
+    }
+  
   // Handle key change.
-  if (!error) {
-    return verifyPrekeyBundle(userID, deviceID, responseData)
-  }
-
-  return {
-    error: error
-  }
+  return verifyPrekeyBundle(userID, deviceID, responseData)
 }

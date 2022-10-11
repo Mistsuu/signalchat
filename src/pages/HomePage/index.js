@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import HomeBox from "./HomeBox";
 import { getLocalStorage, rmLocalStorage } from "utils/storage.util";
 import { PathConstant, StorageConstant, ApiConstant } from "const";
-import { AuthAction, KeyAction } from "actions";
+import { AuthAction, ConversationAction, KeyAction } from "actions";
 import { useOnceCall } from "utils/fixreact.util";
 
 const HomePage = () => {
@@ -12,6 +12,8 @@ const HomePage = () => {
     if (getLocalStorage(StorageConstant.AUTH_TOKEN))
       checkAndUploadKeyMutation.mutate();
   })
+
+  const [messageUpdater, setMessageUpdater] = useState(null);
 
   //////////////////////////  MUTATIONS  //////////////////////////
 
@@ -37,8 +39,17 @@ const HomePage = () => {
         // Redirect to /login
         window.location.href = ApiConstant.PATH_LOGIN;
       }
+
+      // In the case of non-error, we will periodically pull data.
+      else {
+        pullMessageMutation.mutate();
+      }
     },
   });
+
+  const pullMessageMutation = useMutation(ConversationAction.periodicallyPullMessages, {
+
+  })
 
   const logOutMutation = useMutation(AuthAction.authLogout, {
     onSettled: () => {

@@ -37,6 +37,10 @@ function hexifyRachetStateObj(obj)
   }
 }
 
+// ==============================================================================================================
+//                                             ENCRYPTION 
+// ==============================================================================================================
+
 function encryptIntialMessageNewSession(userID, deviceID, NativeBobPrekeyBundle)
 {
   var headerSchema = object({
@@ -130,7 +134,7 @@ function encryptMessageInStoredSessions(userID, message, messageID, filteredDevi
         
         // Check if encrypt successful, then write new rachet state to database.
         if (ciphertext.length === 0)
-        continue;
+          continue;
         
         // Write new rachet state to database.
         hexifyRachetStateObj(nxtRachetState);
@@ -332,7 +336,6 @@ export async function sendMessage(data)
   // --------------------- Request send to the UserID's mailbox ---------------------.
   var { error } = handleSendAndRetries(data.receipientUserID, data.message, messageID);
   if (error) {
-    // TODO: remove message
     return {
       error: error
     }
@@ -348,5 +351,51 @@ export async function sendMessage(data)
 
   return {
     error: ""
+  }
+}
+
+// ==============================================================================================================
+//                                             DECRYPTION 
+// ==============================================================================================================
+
+export async function periodicallyPullMessages()
+{
+  // Create schema
+  var responseSchema = object({
+    error: string().default(""),
+    messages: array().of(object({
+      type: number().oneOf(Object.values(SystemConstant.MESSAGE_TYPE)),
+      header: string().required(),
+      message: string().required(),
+      messageID: string().required(),
+      timestamp: number().required(),
+      sendUserID: string().required(),
+      sendDeviceID: string().required(),
+    })).default([])
+  });
+
+  while (true) {
+    // Get API call result
+    var response = await ConversationApi.fetchMessages();
+    var {
+      error, 
+      responseData
+    } = parseResponse(responseSchema, response);
+    console.log(response)
+
+    if (!error) {
+
+    } 
+    // If server's timeout.
+    else if (response.problem === ApiConstant.PROB_TIMEOUT_ERROR) {
+      console.log("Server is timeout, which is fine...");
+    }
+    // If server dies or something...
+    else {
+      console.error(error);
+      await new Promise(r => setTimeout(r, 30000));
+    }
+
+    await new Promise(r => setTimeout(r, 1000));
   }
 }

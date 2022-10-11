@@ -23,16 +23,11 @@ const ChatBox = ({ userID, ...otherProps }) => {
       receipientUserID: userID, 
       message: newMessage.content
     });
+
     setMessages([ newMessage, ...messages ]);
   }
 
-  const onFetchOldMessage = () => {
-    
-  }
-
   const sendMessageMutation = useMutation(ConversationAction.sendMessage, {
-    onMutate: (variables) => {
-    },
     onError: (error, variables, context) => {
       // TODO: Set data so that the notification badge display on screen.
       alert(error);
@@ -43,8 +38,6 @@ const ChatBox = ({ userID, ...otherProps }) => {
         alert(data.error);
       }
     },
-    onSettled: () => {
-    }
   })
 
   return (
