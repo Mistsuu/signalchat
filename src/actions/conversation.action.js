@@ -444,7 +444,7 @@ function handleIntialMessage(message)
   var rachetState = CryptoInteractor.rachetInitBob(sharedSecret, NativeBobPrekeyBundle);
   hexifyRachetStateObj(rachetState)
 
-  // TODO: Create session
+  // Create session
   SessionModel.create({
     userID: message.sendUserID,
     deviceID: message.sendDeviceID,
