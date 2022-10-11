@@ -70,6 +70,9 @@ function encryptIntialMessageNewSession(userID, deviceID, NativeBobPrekeyBundle)
     
     // Encrypt (IKa || IKb) with shared secret then send to Bob to verify the session.
     var ciphertext = CryptoInteractor.innerEncrypt(sharedSecret, associatedData, associatedData);
+    console.log(bufferToHex(associatedData));
+    console.log(bufferToHex(ciphertext));
+    
     return {
       type: SystemConstant.MESSAGE_TYPE.initial,
       header: JSON.stringify(
