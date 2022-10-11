@@ -149,6 +149,8 @@ const findOneByIdAndUpdate = (model, dbFilepath, id, setValues) => {
       var parsedItem = model.validateSync(item);
       jsonData[index] = parsedItem;
 
+      // Write data & return new object.
+      jsonfile.writeFileSync(dbFilepath, jsonData);
       return parsedItem._data;
     }
   }

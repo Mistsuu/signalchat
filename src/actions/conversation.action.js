@@ -126,11 +126,12 @@ function encryptMessageInStoredSessions(userID, message, messageID, filteredDevi
           rachetHeader,
           ciphertext
         } = CryptoInteractor.signalEncrypt(rachetState, plaintext, associatedData);
-  
+
+        
         // Check if encrypt successful, then write new rachet state to database.
         if (ciphertext.length === 0)
-          continue;
-
+        continue;
+        
         // Write new rachet state to database.
         hexifyRachetStateObj(nxtRachetState);
         SessionModel.findOneByIdAndUpdate(sessionID, { rachetState: nxtRachetState });
