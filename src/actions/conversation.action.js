@@ -96,6 +96,7 @@ function encryptMessageInStoredSessions(userID, message, messageID, filteredDevi
 {
   var messageObjs = [];
   var deviceRecords = [];
+  console.log(filteredDeviceIDs)
   if (!filteredDeviceIDs.length)
     deviceRecords = DeviceModel.findAll({
                       userID: userID
@@ -301,7 +302,7 @@ export async function handleSendAndRetries(userID, message, messageID, targetUse
     }
     
     // Send message for new devices
-    var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, responseData.newDeviceIDs, targetUserID);
+    var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, targetUserID, responseData.newDeviceIDs);
     if (error && !(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) { // Ignore new devices added, we only care after we send actual message next time.
       return {
         error: error,
