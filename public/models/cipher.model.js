@@ -10,6 +10,7 @@ const cipherSchema = object({
   timestamp: number().required(),
   sendUserID: string().required(),
   sendDeviceID: string().required(),
+  receiveUserID: string().required(),
 })
 
 module.exports = BaseModel.generate(cipherSchema, "cipher");

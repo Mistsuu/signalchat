@@ -28,7 +28,7 @@ const API_GETKEY = "/getkey/{0}/{1}";
 const API_UPDATEONETIME = "/updateOneTime";
 const API_CHECKKEYSTATUS = "/checkKeyStatus";
 
-const API_SENDMESSAGES = "/sendMessages/{0}";
+const API_SENDMESSAGES = "/sendMessages/{0}/{1}";
 const API_FETCHMESSAGES = "/fetchMessages";
 const API_CLEARMESSAGES = "/clearMessages";
 

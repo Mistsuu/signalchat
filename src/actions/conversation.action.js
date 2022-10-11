@@ -174,7 +174,7 @@ function markDevicesAsStale(userID, deviceIDs)
   }
 }
 
-async function sendIntialMessageForNewDevices(userID, deviceIDs)
+async function sendIntialMessageForNewDevices(userID, deviceIDs, targetUserID)
 { 
   // Schema for publishing message to server.
   const requestSchema = array().of(
@@ -216,7 +216,7 @@ async function sendIntialMessageForNewDevices(userID, deviceIDs)
   var request = requestSchema.cast(messageObjs);
 
   // Get response
-  var response = await ConversationApi.sendMessage(userID, request);
+  var response = await ConversationApi.sendMessage(userID, targetUserID, request);
   var {
     error,
     responseData,
@@ -229,7 +229,7 @@ async function sendIntialMessageForNewDevices(userID, deviceIDs)
   }
 }
 
-async function sendMessageForStoredSessions(userID, message, messageID, filteredDeviceIDs=[])
+async function sendMessageForStoredSessions(userID, message, messageID, targetUserID, filteredDeviceIDs=[])
 {
   // Schema for publishing message to server.
   const requestSchema = array().of(
@@ -260,7 +260,7 @@ async function sendMessageForStoredSessions(userID, message, messageID, filtered
   );
 
   // Get response
-  var response = await ConversationApi.sendMessage(userID, request);
+  var response = await ConversationApi.sendMessage(userID, targetUserID, request);
   var {
     error,
     responseData,
@@ -273,9 +273,9 @@ async function sendMessageForStoredSessions(userID, message, messageID, filtered
   }
 }
 
-export async function handleSendAndRetries(userID, message, messageID)
+export async function handleSendAndRetries(userID, message, messageID, targetUserID)
 {
-  var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, []);
+  var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, targetUserID, []);
 
   if (error) {
     // If error is not related to adding new devices, we should exit.
@@ -293,7 +293,7 @@ export async function handleSendAndRetries(userID, message, messageID)
       }
     
     // Send initial message for new devices
-    var { error, responseStatus, ...responseData } = await sendIntialMessageForNewDevices(userID, responseData.newDeviceIDs);
+    var { error, responseStatus, ...responseData } = await sendIntialMessageForNewDevices(userID, responseData.newDeviceIDs, targetUserID);
     if (error && !(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) { // Ignore new devices added, we only care after we send actual message.
       return {
         error: error
@@ -301,7 +301,7 @@ export async function handleSendAndRetries(userID, message, messageID)
     }
     
     // Send message for new devices
-    var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, responseData.newDeviceIDs);
+    var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, responseData.newDeviceIDs, targetUserID);
     if (error && !(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) { // Ignore new devices added, we only care after we send actual message next time.
       return {
         error: error,
@@ -333,7 +333,7 @@ export async function sendMessage(data)
   
 
   // --------------------- Request send to the UserID's mailbox ---------------------.
-  var { error } = handleSendAndRetries(data.receipientUserID, data.message, messageID);
+  var { error } = handleSendAndRetries(data.receipientUserID, data.message, messageID, data.receipientUserID);
   if (error) {
     return {
       error: error
@@ -342,7 +342,7 @@ export async function sendMessage(data)
 
   // --------------------- Request send to the our other devices' mailbox ---------------------.
   if (getLocalStorage(StorageConstant.USER_ID) !== data.receipientUserID) {
-    var { error } = handleSendAndRetries(getLocalStorage(StorageConstant.USER_ID), data.message, messageID);
+    var { error } = handleSendAndRetries(getLocalStorage(StorageConstant.USER_ID), data.message, messageID, data.receipientUserID);
     if (error) {
       return {
         error: error
@@ -536,7 +536,7 @@ function handleUndecryptedMessages()
         if (plaintext.length !== 0) {
           // Save message!
           MessageModel.create({
-            userID: cipherRecord.sendUserID,
+            userID: cipherRecord.receiveUserID,
             message: new TextDecoder().decode(plaintext),
             timestamp: cipherRecord.timestamp,
             side: cipherRecord.sendUserID !== getLocalStorage(StorageConstant.USER_ID) ? SystemConstant.CHAT_SIDE_TYPE.their : SystemConstant.CHAT_SIDE_TYPE.our,
@@ -620,6 +620,7 @@ export async function periodicallyPullMessages()
       timestamp: number().required(),
       sendUserID: string().required(),
       sendDeviceID: string().required(),
+      receiveUserID: string().required(),
     })).default([])
   });
 
