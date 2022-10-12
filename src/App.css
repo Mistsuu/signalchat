@@ -41,6 +41,10 @@
   width: 7px;
 }
 
+.noScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 ::-webkit-scrollbar-thumb {
   background: rgba(29, 30, 31, 0.765);
   border-radius: 25px;

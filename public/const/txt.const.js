@@ -7,6 +7,7 @@ const TXT_OR_LOGIN = "... or login";
 const TXT_OR_REGISTER = "... or register";
 const TXT_SUCCESSFULLY_LOGGED_IN = "Successfully logged in!";
 const TXT_SUCCESSFULLY_REGISTER = "Register successfully!";
+const TXT_WHO_YOU_LIKE_TO_CHAT = "Who would you like to chat?";
 
 // Errors
 const ERR_INVALID_RESPONSE_FROM_SERVER = "Invalid response from server!";
@@ -25,6 +26,7 @@ const FM_ERROR = "Error: {0}"
 const FM_REQUEST_ERROR = "Request Error: {0}"
 const FM_DATABASE_ERROR = "Database Error: {0}"
 const FM_DB_PATH = "{0}/{1}.json"
+const FM_DISPLAYUSER = "- Hi, {0} -"
 
 module.exports = {
   // Normal texts
@@ -36,6 +38,7 @@ module.exports = {
   TXT_OR_REGISTER,
   TXT_SUCCESSFULLY_LOGGED_IN,
   TXT_SUCCESSFULLY_REGISTER,
+  TXT_WHO_YOU_LIKE_TO_CHAT,
   // Errors
   ERR_CANNOT_UPLOAD_KEY_TO_SERVER,
   ERR_INVALID_RESPONSE_FROM_SERVER,
@@ -52,4 +55,5 @@ module.exports = {
   FM_REQUEST_ERROR,
   FM_DATABASE_ERROR,
   FM_DB_PATH,
+  FM_DISPLAYUSER,
 }

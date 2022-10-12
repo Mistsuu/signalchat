@@ -1,15 +1,22 @@
 import React, { memo, useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import StringFormat from "string-format";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/material";
 import { getApproxString } from "utils/buffer.util";
+import { TxtConstant } from "const";
 
 const UserTitle = ({ children: title, ...otherProps }) => {
   const classes = useStyles();
   return (
-    <Box className={classes.chatTitle}>
-      {getApproxString(title)}
-    </Box>
+    <>
+      <Box className={classes.chatTitle}>
+        {StringFormat(TxtConstant.FM_DISPLAYUSER, getApproxString(title, 10))}
+      </Box>
+      <Box className={classes.chatAsk}>
+        {TxtConstant.TXT_WHO_YOU_LIKE_TO_CHAT}
+      </Box>
+    </>
   )
 };
 
@@ -30,6 +37,16 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     paddingTop: 10,
     width: "100%",
-    fontSize: 45,
+    fontSize: 35,
+  },
+
+  chatAsk: {
+    fontFamily: "RobotoMono",
+    fontStyle: "italic",
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    fontSize: 12,
+    color: "#a0a0a0",
   },
 }));

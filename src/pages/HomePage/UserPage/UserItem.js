@@ -9,7 +9,7 @@ import { SystemConstant } from "const";
 const UserItem = ({ children:username, onClick, ...otherProps }) => {
   let classes = useStyles();
   return (
-    <Button className={classes.userItem} width={"100%"} height={60} onClick={onClick}>
+    <Button className={classes.userItem} width={"100%"} height={54} onClick={onClick}>
       <Box>
         {username}
       </Box>
@@ -32,8 +32,9 @@ const useStyles = makeStyles(theme => ({
     borderColor: "#1d1e1f",
     fontWeight: "bolder",
     marginTop: 10,
+    marginBottom: 10,
     fontSize: 20,
-    border: 10,
+    border: 6,
     padding: 5,
     borderRadius: 10,
     boxShadow: "none",
