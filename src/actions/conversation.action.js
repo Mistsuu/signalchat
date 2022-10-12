@@ -96,7 +96,6 @@ function encryptMessageInStoredSessions(userID, message, messageID, filteredDevi
 {
   var messageObjs = [];
   var deviceRecords = [];
-  console.log(filteredDeviceIDs)
   if (!filteredDeviceIDs.length)
     deviceRecords = DeviceModel.findAll({
                       userID: userID
@@ -650,7 +649,7 @@ export async function periodicallyPullMessages()
       await new Promise(r => setTimeout(r, 30000));
     }
 
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 100));
   }
 }
 
@@ -667,5 +666,27 @@ export async function fetchMessagesFromDB(userID)
   }
   catch {
     return [];
+  }
+}
+
+export async function fetchAllUsers()
+{
+  // Create schema
+  const responseSchema = object({
+    userIDs: array().of(string().required()).default([]),
+    error: string().default(""),
+  })
+
+  // Check server respond
+  var response = await ConversationApi.fetchUsers();
+  var {
+    error,
+    responseData
+  } = parseResponse(responseSchema, response);
+
+  // Returns error.
+  return {
+    userIDs: !error? responseData.userIDs : null,
+    error: error
   }
 }

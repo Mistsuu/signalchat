@@ -32,6 +32,8 @@ const API_SENDMESSAGES = "/sendMessages/{0}/{1}";
 const API_FETCHMESSAGES = "/fetchMessages";
 const API_CLEARMESSAGES = "/clearMessages";
 
+const API_FETCHUSERS = "/fetchUsers"
+
 // Problems (throw by APISauce)
 const PROB_NONE = null;
 const PROB_CLIENT_ERROR = "CLIENT_ERROR";
@@ -73,6 +75,8 @@ module.exports = {
   API_SENDMESSAGES,
   API_FETCHMESSAGES,
   API_CLEARMESSAGES,
+
+  API_FETCHUSERS,
 
   // Problems
   PROB_NONE,

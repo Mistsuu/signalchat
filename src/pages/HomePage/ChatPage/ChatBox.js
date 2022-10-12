@@ -23,9 +23,9 @@ const ChatBox = ({ userID, ...otherProps }) => {
                   .sort((leftRecord, rightRecord) => rightRecord.timestamp - leftRecord.timestamp) 
                   .map(messageRecord => ({ content: messageRecord.message, side: messageRecord.side })));
 
-    return true;
+    return messageRecords;
   }
-  useQuery(['messages', userID], getMessages, { refetchInterval:1000 });
+  useQuery(['messages', userID], getMessages, { refetchInterval:100 });
 
   // -------------------------------- Send new message to the other side. --------------------------------
 
