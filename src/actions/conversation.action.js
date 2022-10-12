@@ -470,6 +470,7 @@ function handleUndecryptedMessages()
   const cipherRecords = CipherModel.findAllWithId({});
   const cacheDeviceStates = {}
   const cacheSessionRecords = {}
+  const ourUserID = getLocalStorage(StorageConstant.USER_ID);
 
   // ======================   Callbacks to pull data and modify it   ======================
   const getDeviceRecord = ( userID, deviceID ) => DeviceModel.findOne({
@@ -534,12 +535,18 @@ function handleUndecryptedMessages()
             );
 
         if (plaintext.length !== 0) {
+          var theirUserID;
+          if (cipherRecord.receiveUserID === ourUserID)
+            theirUserID = cipherRecord.sendUserID;
+          else 
+            theirUserID = cipherRecord.receiveUserID;
+
           // Save message!
           MessageModel.create({
-            userID: cipherRecord.receiveUserID,
+            userID: theirUserID,
             message: new TextDecoder().decode(plaintext),
             timestamp: cipherRecord.timestamp,
-            side: cipherRecord.sendUserID !== getLocalStorage(StorageConstant.USER_ID) ? SystemConstant.CHAT_SIDE_TYPE.their : SystemConstant.CHAT_SIDE_TYPE.our,
+            side: cipherRecord.sendUserID === ourUserID ? SystemConstant.CHAT_SIDE_TYPE.our : SystemConstant.CHAT_SIDE_TYPE.their,
           })
 
           // Remove ciphertext!
