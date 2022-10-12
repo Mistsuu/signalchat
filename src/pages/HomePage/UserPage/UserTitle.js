@@ -35,9 +35,9 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "bolder",
     display: "flex",
     justifyContent: "center",
-    paddingTop: 10,
+    paddingTop: "2vw",
     width: "100%",
-    fontSize: 35,
+    fontSize: "6vw",
   },
 
   chatAsk: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     width: "100%",
-    fontSize: 12,
+    fontSize: "2.1vw",
     color: "#a0a0a0",
   },
 }));

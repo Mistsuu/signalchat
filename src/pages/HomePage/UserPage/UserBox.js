@@ -27,14 +27,17 @@ const UserBox = ({setUserID, ...otherProps}) => {
       <UserTitle>
         {getLocalStorage(StorageConstant.USER_ID)}
       </UserTitle>
-      <Box className={clsx(classes.userWindow, "noScrollbar")}>
-        {users 
-          && users.map(
-              user => 
-                <UserItem key={user} onClick={() => setUserID(user)}>
-                  {user}
-                </UserItem>
-             )}
+
+      <Box className={classes.justifyUserWindow}>
+        <Box className={clsx(classes.userWindow, "noScrollbar")}>
+          {users 
+            && users.map(
+                user => 
+                  <UserItem key={user} onClick={() => setUserID(user)}>
+                    {user}
+                  </UserItem>
+              )}
+        </Box>
       </Box>
     </>
   )
@@ -51,14 +54,19 @@ UserBox.defaultProps = {
 export default memo(UserBox);
 
 const useStyles = makeStyles(theme => ({
+  justifyUserWindow: {
+    display: "flex",
+    justifyContent: "center",
+    height: "calc(100% - 27vw)",
+  },
   userWindow: {
-    height: "calc(100% - 190px)",
-    margin: 50,
-    marginTop: 5,
-    borderRadius: 15,
+    margin: "5.6vw",
+    marginTop: "3.2vw",
+    borderRadius: "2vw",
     borderStyle: "dashed",
-    padding: "0px 20px 0px 20px",
-    border: 10,
+    padding: "0px 4vw 0px 4vw",
+    border: "1vw",
     overflowY: "scroll",
+    height: "92%"
   },
 }));

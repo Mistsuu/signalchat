@@ -9,7 +9,7 @@ const ExitBtn = ({ onClick, ...otherProps }) => {
   const classes = useStyles();
 
   return (
-    <Button width={100} height={30} className={classes.backBtn} onClick={onClick}>
+    <Button width={"10vw"} height={"3.5vw"} className={classes.backBtn} onClick={onClick}>
       <Box>
         Logout
       </Box>
@@ -27,10 +27,11 @@ export default memo(ExitBtn);
 
 const useStyles = makeStyles(theme => ({
   backBtn: {
+    fontSize: "2vw",
     position: "absolute",
-    bottom: 24,
-    left: "calc(50% - 50px)",
-    borderRadius: 20,
+    bottom: "4vw",
+    left: "calc(50% - 5vw)",
+    borderRadius: "10vw",
     borderWidth: 1,
     borderColor: "transparent",
     boxShadow: "none",
