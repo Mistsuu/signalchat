@@ -13,31 +13,21 @@ const HomePage = () => {
       checkAndUploadKeyMutation.mutate();
   })
 
-  const [messageUpdater, setMessageUpdater] = useState(null);
-
   //////////////////////////  MUTATIONS  //////////////////////////
 
   const checkAndUploadKeyMutation = useMutation(KeyAction.checkAndUploadKey, {
     onError: (error, variables, context) => {
       // TODO: Set data so that the notification badge display on screen.
       alert(error);
-      // Remove storage
-      rmLocalStorage(StorageConstant.AUTH_TOKEN);
-      rmLocalStorage(StorageConstant.DEVICE_ID);
-      rmLocalStorage(StorageConstant.USER_ID);
-      // Redirect to /login
-      window.location.href = ApiConstant.PATH_LOGIN;
+      // Log out
+      logOutMutation.mutate();
     },
     onSuccess: (data, variables, context) => {
       if (data.error) {
         // TODO: Set data so that the notification badge display on screen.
         alert(data.error);
-        // Remove storage
-        rmLocalStorage(StorageConstant.AUTH_TOKEN);
-        rmLocalStorage(StorageConstant.DEVICE_ID);
-        rmLocalStorage(StorageConstant.USER_ID);
-        // Redirect to /login
-        window.location.href = ApiConstant.PATH_LOGIN;
+        // Log out
+        logOutMutation.mutate();
       }
 
       // In the case of non-error, we will periodically pull data.
