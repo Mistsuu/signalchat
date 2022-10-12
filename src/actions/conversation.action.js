@@ -286,14 +286,16 @@ export async function handleSendAndRetries(userID, message, messageID, targetUse
     }
 
     // Remove old devices
-    var {error} = markDevicesAsStale(userID, responseData.oldDeviceIDs);
+    var oldDeviceIDs = responseData.oldDeviceIDs;
+    var newDeviceIDs = responseData.newDeviceIDs;
+    var {error} = markDevicesAsStale(userID, oldDeviceIDs);
     if (error)
       return {
         error: error
       }
     
     // Send initial message for new devices
-    var { error, responseStatus, ...responseData } = await sendIntialMessageForNewDevices(userID, responseData.newDeviceIDs, targetUserID);
+    var { error, responseStatus, ...responseData } = await sendIntialMessageForNewDevices(userID, newDeviceIDs, targetUserID);
     if (error && !(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) { // Ignore new devices added, we only care after we send actual message.
       return {
         error: error
@@ -301,7 +303,7 @@ export async function handleSendAndRetries(userID, message, messageID, targetUse
     }
     
     // Send message for new devices
-    var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, targetUserID, responseData.newDeviceIDs);
+    var { error, responseStatus, ...responseData } = await sendMessageForStoredSessions(userID, message, messageID, targetUserID, newDeviceIDs);
     if (error && !(responseStatus && responseData && responseStatus === ApiConstant.STT_CONFLICT)) { // Ignore new devices added, we only care after we send actual message next time.
       return {
         error: error,
