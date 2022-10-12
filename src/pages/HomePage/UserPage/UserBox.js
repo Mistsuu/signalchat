@@ -18,7 +18,7 @@ const UserBox = ({setUserID, ...otherProps}) => {
     return userIDs;
   }
 
-  useQuery(['users'], fetchUsers, { refetchInterval:1000 })
+  useQuery(['users'], fetchUsers, { refetchInterval:30000 })
 
   return (
     <>
