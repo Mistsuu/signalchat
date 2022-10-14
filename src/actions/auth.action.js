@@ -62,6 +62,9 @@ export async function authRegister(data) {
 };
 
 export async function authLogout() {
+  // Call /logout to server, ignore output!
+  await AuthApi.logout();
+  
   // Clear database files
   PrekeyModel.dropAll();
   MessageModel.dropAll();

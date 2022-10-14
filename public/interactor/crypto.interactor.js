@@ -77,6 +77,13 @@ const generateBobPrekeyBundle = () => {
   return bobPrekeyBundle;
 }
 
+const generateBobOneTimePrekeys = () => {
+  var oneTimePrekeys = [];
+  for (let i = 0; i < SystemConstant.NO_ONETIME_PREKEYS; ++i) 
+    oneTimePrekeys.push(generateKeyPair());
+  return oneTimePrekeys;
+}
+
 const verifyBobPrekeyBundle = (bobPrekeyBundle) => {
   return verifySignature(
           bobPrekeyBundle[IDENTITY_KEY][PUBLIC_KEY],
@@ -164,6 +171,7 @@ module.exports = {
   getIdentityKey,
   generateAlicePrekeyBundle,
   generateBobPrekeyBundle,
+  generateBobOneTimePrekeys,
   generateKeyPair,
   verifyBobPrekeyBundle,
   rachetInitAlice,

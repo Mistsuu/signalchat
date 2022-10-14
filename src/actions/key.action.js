@@ -1,6 +1,6 @@
 import StringFormat from "string-format";
 import { KeyApi } from "api";
-import { object, string, boolean, array } from "yup";
+import { object, string, boolean, array, number } from "yup";
 import { CryptoInteractor } from "interactor";
 import { TxtConstant, SystemConstant, NativeConstant } from "const";
 import { bufferToHex, hexToBuffer } from "utils/buffer.util";
@@ -35,6 +35,15 @@ function writePreKeyBundleToDB(prekeyBundle) {
     });
 }
 
+function writeNewOneTimePrekeysToDB(newOneTimePrekeys) {
+  for (var onetimePrekey of newOneTimePrekeys) 
+    PrekeyModel.create({
+      keyType: SystemConstant.KEY_TYPE.onetimePrekey,
+      publicKey: bufferToHex(onetimePrekey[NativeConstant.PUBLIC_KEY]),
+      privateKey: bufferToHex(onetimePrekey[NativeConstant.PRIVATE_KEY]),
+    });
+}
+
 function fetchKeysFromDB() {
   var prekeyBundle = {};
   
@@ -60,7 +69,7 @@ function fetchKeysFromDB() {
   return prekeyBundle;
 }
 
-export async function initKeys() {
+export async function initKeys(keyStatus) {
   // Create schema
   let requestSchema = object({
     identityKey: string().required(),
@@ -75,6 +84,7 @@ export async function initKeys() {
 
   // Fetch keys from database, or generate if it doesn't exist.
   var prekeyBundle = fetchKeysFromDB();
+  var newOneTimePrekeys = [];
   var isGenerateNewKeys = (prekeyBundle === null);
   var request = null;
   if (isGenerateNewKeys) {
@@ -85,7 +95,17 @@ export async function initKeys() {
       signature: bufferToHex(prekeyBundle.signature),
       onetimePrekeys: prekeyBundle.oneTimePreKeys.map(onetimePrekey => bufferToHex(onetimePrekey.publicKey)),
     });
-  } else {
+  } 
+  else if (keyStatus === SystemConstant.KEY_STATE.lowOneTime) {
+    newOneTimePrekeys = CryptoInteractor.generateBobOneTimePrekeys();
+    request = requestSchema.cast({
+      identityKey: prekeyBundle.identityKey,
+      signedPrekey: prekeyBundle.signedPrekey,
+      signature: prekeyBundle.signature,
+      onetimePrekeys: prekeyBundle.onetimePrekeys.concat(newOneTimePrekeys.map(onetimePrekey => bufferToHex(onetimePrekey.publicKey))),
+    });
+  }
+  else {
     request = requestSchema.cast({
       identityKey: prekeyBundle.identityKey,
       signedPrekey: prekeyBundle.signedPrekey,
@@ -102,14 +122,26 @@ export async function initKeys() {
   } = parseResponse(responseSchema, response);
 
   // Write keys to database if upload is successful!
-  if (!error && isGenerateNewKeys)
-    try {
-      writePreKeyBundleToDB(prekeyBundle);
-    } catch (err) {
-      return {
-        error: StringFormat(TxtConstant.FM_DATABASE_ERROR, err)
+  if (!error) {
+    if (isGenerateNewKeys) {
+      try {
+        writePreKeyBundleToDB(prekeyBundle);
+      } catch (err) {
+        return {
+          error: StringFormat(TxtConstant.FM_DATABASE_ERROR, err)
+        }
+      }
+    } 
+    else if (keyStatus === SystemConstant.KEY_STATE.lowOneTime) {
+      try {
+        writeNewOneTimePrekeysToDB(newOneTimePrekeys);
+      } catch (err) {
+        return {
+          error: StringFormat(TxtConstant.FM_DATABASE_ERROR, err)
+        }
       }
     }
+  }
 
   return {
     error: error
@@ -119,7 +151,7 @@ export async function initKeys() {
 export async function checkAndUploadKey() {
   // Create schemas
   let responseSchema = object({
-    isKeyExists: boolean().required(),
+    keyStatus: number().oneOf(Object.values(SystemConstant.KEY_STATE)),
   })
 
   // Get API call result
@@ -129,8 +161,10 @@ export async function checkAndUploadKey() {
     responseData,
   } = parseResponse(responseSchema, response);
 
-  if (!error && !responseData.isKeyExists)
-    return await initKeys();
+  if (!error) {
+    if (!(responseData.keyStatus === SystemConstant.KEY_STATE.ok))
+      return await initKeys(responseData.keyStatus);
+  }
 
   return {
     error: error,

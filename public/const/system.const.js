@@ -24,6 +24,12 @@ const MESSAGE_TYPE = {
   normal: 1,
 };
 
+const KEY_STATE = {
+  ok: 0,
+  notUploaded: 1,
+  lowOneTime: 2, 
+}
+
 const NO_ONETIME_PREKEYS = 100;
 const MAX_INTERVAL = 3600;
 
@@ -33,6 +39,7 @@ module.exports = {
   KEY_TYPE,
   DEVICE_STATE,
   SESSION_STATE,
+  KEY_STATE,
   MESSAGE_TYPE,
   MAX_INTERVAL,
 }
