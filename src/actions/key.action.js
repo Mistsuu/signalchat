@@ -206,7 +206,7 @@ function verifyPrekeyBundle(userID, deviceID, prekeyBundle) {
       error: TxtConstant.ERR_VERIFY_PREKEY_BUNDLE_FAILED
     }
   }
-   
+  
   return {
     ...NativeBobPrekeyBundle,
     error: "",

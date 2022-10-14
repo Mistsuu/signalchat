@@ -124,13 +124,14 @@ const getNativeBobPrekeyBundle = (
       [PRIVATE_KEY]: new Uint8Array(),
     },
     [SIGNATURE]: hex2Buffer(signature),
-    [ONETIME_PREKEY]: onetimePrekeyPublic 
+    [ONETIME_PREKEY]: onetimePrekeyPublic.length 
                         ? {
                             [PUBLIC_KEY]: hex2Buffer(onetimePrekeyPublic),
                             [PRIVATE_KEY]: new Uint8Array(),
                           } 
                         : {
-                            [PUBLIC_KEY]: new Uint8Array()
+                            [PUBLIC_KEY]: null,
+                            [PRIVATE_KEY]: null,
                           }
   };
 }

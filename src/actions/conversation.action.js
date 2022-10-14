@@ -86,6 +86,7 @@ function encryptIntialMessageNewSession(userID, deviceID, NativeBobPrekeyBundle)
     };
   } 
   catch (err) {
+    console.log(err)
     return {
       error: err
     }
