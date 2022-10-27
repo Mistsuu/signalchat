@@ -18,7 +18,7 @@ This application has only been verified to be used in the environment of **Ubunt
 1. First, you need to clone the repository and install Node packages:
 
    ```bash
-   git clone https://github.com/Mistsuu/signalchat
+   git clone --recurse-submodules https://github.com/Mistsuu/signalchat
    cd signalchat
    yarn install
    ```
