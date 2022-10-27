@@ -1,70 +1,52 @@
-# Getting Started with Create React App
+# signalchat
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A project made for the submission of my undergraduate thesis, aiming to create a chat interface that applies my homemade library implementing the Signal Protocol (link: https://github.com/Mistsuu/native-rachet). This work is the result of following the documents of Moxie Marlinspike and Trevor Perrin *(link: https://signal.org/docs/)*. 
 
-## Available Scripts
+However, since the resulting application does not support **per-user identity key mode** to provide an in-person authentication method, it is still susceptible to the man-in-the-middle attack performed by the server.
 
-In the project directory, you can run:
+This project is made for educational uses only.
 
-### `npm start`
+## Requirements
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This application has only been verified to be used in the environment of **Ubuntu 22.04** and **Ubuntu 20.04** only. It uses **NodeJS** as the backbone for the back-end and **Electron** with **ReactJS** as the backbone for the front-end.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Packages: `libgmp3-dev`
+- Node version: `16.14.0`
 
-### `npm test`
+## How to run
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. First, you need to clone the repository and install Node packages:
 
-### `npm run build`
+   ```bash
+   git clone https://github.com/Mistsuu/signalchat
+   cd signalchat
+   yarn install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Start the application:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```bash
+   yarn dev
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Note
 
-### `npm run eject`
+In order to connect to the server, please set the variable `BASE_URL` manually at `public/const/api.const.js` , as I have not provided a way to do choose it in the client interface :<
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Screenshots
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Login page
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+  <img src="img/loginpage.png" alt="Login Page" style="zoom:50%;" />
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Register page
 
-## Learn More
+  <img src="img/registerpage.png" alt="Login Page" style="zoom:50%;" />
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Home page
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  <img src="img/homepage.png" alt="Login Page" style="zoom:50%;" />
 
-### Code Splitting
+- Chat page
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  <img src="img/chatpage.png" alt="Login Page" style="zoom:50%;" />
