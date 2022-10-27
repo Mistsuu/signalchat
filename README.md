@@ -1,6 +1,6 @@
 # signalchat
 
-A project made for the submission of my undergraduate thesis, aiming to create a chat interface that applies my homemade library implementing the Signal Protocol (link: https://github.com/Mistsuu/native-rachet). This work is the result of following the documents of Moxie Marlinspike and Trevor Perrin *(link: https://signal.org/docs/)*. 
+A project made for the submission of my undergraduate thesis, aiming to create a chat interface that applies my homemade library implementing the Signal Protocol *(link: https://github.com/Mistsuu/native-rachet)*. This work is the result of following the documents of Moxie Marlinspike and Trevor Perrin *(link: https://signal.org/docs/)*. 
 
 However, since the resulting application does not support **per-user identity key mode** to provide an in-person authentication method, it is still susceptible to the man-in-the-middle attack performed by the server.
 
