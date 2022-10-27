@@ -35,18 +35,18 @@ In order to connect to the server, please set the variable `BASE_URL` manually a
 
 ## Screenshots
 
-- Login page
+### Login Page
 
-  <img src="img/loginpage.png" alt="Login Page" style="zoom:50%;" />
+<img src="img/loginpage.png" alt="Login Page" style="zoom:25%;" />
 
-- Register page
+### Register Page
 
-  <img src="img/registerpage.png" alt="Login Page" style="zoom:50%;" />
+<img src="img/registerpage.png" alt="Login Page" style="zoom:25%;" />
 
-- Home page
+### Home Page
 
-  <img src="img/homepage.png" alt="Login Page" style="zoom:50%;" />
+<img src="img/homepage.png" alt="Login Page" style="zoom:25%;" />
 
-- Chat page
+### Chat Page
 
-  <img src="img/chatpage.png" alt="Login Page" style="zoom:50%;" />
+<img src="img/chatpage.png" alt="Login Page" style="zoom:25%;" />
